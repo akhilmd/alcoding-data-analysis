@@ -6,12 +6,12 @@ const FileSchema = new mongoose.Schema({
         required: true
     },
     encoding: {
-        type:String,
+        type: String,
         required: true
     },
-    mimetype:{
-        type:String,
-        required:true
+    mimetype: {
+        type: String,
+        required: true
     },
     destination: {
         type: String,
@@ -24,11 +24,11 @@ const FileSchema = new mongoose.Schema({
     size: {
         type: Number,
         required: true
-    }, 
+    },
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
-        required:true
+        required: true
     }
-}, {strict:false});
+}, {strict: false});
 
 module.exports = mongoose.model('File', FileSchema);

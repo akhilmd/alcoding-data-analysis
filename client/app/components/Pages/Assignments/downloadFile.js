@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import axios from 'axios';
 
 class downloadFile extends Component {
@@ -6,18 +6,18 @@ class downloadFile extends Component {
         super(props);
     }
     componentDidMount() {
-        //api/assignments/:fileID/download
-        const { match: { params } } = this.props;
+        // api/assignments/:fileID/download
+        const {match: {params}} = this.props;
 
         // console.log(params.fileID)
-        var token = localStorage.getItem('token')
+        let token = localStorage.getItem('token');
         axios.get(`/api/assignments/${params.fileID}/download`, {
             headers: {
-                'x-access-token': token,
+                'x-access-token': token
             }
         })
-        .then(res => console.log(res.data))
-        .catch(err => console.log(err))
+            .then((res) => console.log(res.data))
+            .catch((err) => console.log(err));
 
         window.close();
     }
@@ -26,7 +26,7 @@ class downloadFile extends Component {
             <div>
 
             </div>
-        )
+        );
     }
 }
 

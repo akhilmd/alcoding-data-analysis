@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import axios from 'axios';
-import { Link, Redirect } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 
-//import StaticBox from './StaticBox.js';
+// import StaticBox from './StaticBox.js';
 
 import PasswordBox from '../Pages/Profile/PasswordBox';
 
@@ -11,8 +11,8 @@ class ChangePassword extends Component {
     constructor() {
         super();
         this.state = {
-            newPassword: "",
-            confirmNewPassword: "",
+            newPassword: '',
+            confirmNewPassword: ''
         };
 
         this.changeNewPassword = this.changeNewPassword.bind(this);
@@ -23,43 +23,38 @@ class ChangePassword extends Component {
     changeNewPassword(event) {
         event.preventDefault();
         this.setState({
-            newPassword: event.target.value,
+            newPassword: event.target.value
         });
-
     }
 
     changeConfirmNewPassword(event) {
         event.preventDefault();
         this.setState({
-            confirmNewPassword: event.target.value,
+            confirmNewPassword: event.target.value
         });
-
     }
 
     confirmPasswordChange() {
-        const { match: { params } } = this.props;
-        var user_ID = params.userID;
-        var token = params.token;
+        const {match: {params}} = this.props;
+        let user_ID = params.userID;
+        let token = params.token;
 
-        var body = {
+        let body = {
             userID: user_ID,
             newPassword: this.state.newPassword
-        }
-        //api/account/:userID/newPassword
+        };
+        // api/account/:userID/newPassword
         if (this.state.newPassword != this.state.confirmNewPassword) {
-            alert("Passwords do not match.");
-        }
-
-        else {
+            alert('Passwords do not match.');
+        } else {
             // api call needs to be updated
             axios.post(`/api/account/${user_ID}/newPassword`, body, {
                 headers: {
                     'x-access-token': token,
                     'Content-Type': 'application/json'
                 }
-            }).then(res => {
-
-                <Redirect to="/"/>
+            }).then((res) => {
+                <Redirect to="/"/>;
 
                 if (res.data.success) {
                     console.log(res.data);
@@ -67,16 +62,15 @@ class ChangePassword extends Component {
                     alert(res.data.message);
                 }
             })
-                .catch(err => {
+                .catch((err) => {
                     console.log(err);
-                    alert("Error changing the password. Please try again.");
-                })
+                    alert('Error changing the password. Please try again.');
+                });
         }
     }
 
 
     render() {
-
         return (
             <div>
                 <button type="button" className="btn btn-info ml-0 mb-2" data-toggle="modal" data-target="#myModal">Change Password</button>

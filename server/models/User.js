@@ -7,76 +7,76 @@ const bcrypt = require('bcrypt');
 // Add a default for each so that it appears in the profile page.
 
 const UserSchema = new mongoose.Schema({
-  usn: {
-    type: String,
-    default: "",
-    required: true
-  },
-  password: {
-    type: String,
-    // required: true,
-    default: ""
-  },
-  name: {
-    firstName: {
-      type: String,
-      default: "",
-      required: true
+    usn: {
+        type: String,
+        default: '',
+        required: true
     },
-    lastName: {
-      type: String,
-      default: ""
-    }
-  },
-  basicInfo: {
+    password: {
+        type: String,
+        // required: true,
+        default: ''
+    },
+    name: {
+        firstName: {
+            type: String,
+            default: '',
+            required: true
+        },
+        lastName: {
+            type: String,
+            default: ''
+        }
+    },
+    basicInfo: {
     // Contains mutable info
-    email: {
-      type: String,
-      default: ""
+        email: {
+            type: String,
+            default: ''
+        },
+        phone: {
+            type: String,
+            default: ''
+        },
+        dob: {
+            type: Date,
+            default: Date.now()
+        }
     },
-    phone: {
-      type: String,
-      default: ""
-    },
-    dob: {
-      type: Date,
-      default: Date.now()
-    }
-  },
-  contender: {
+    contender: {
     // Contains mutable info
-    handles: {codejam: String, hackerearth: String, codechef: String, hackerrank: String, interviewbit: String, codeforces: String, hackercup: String, kickstart: String},
-    rating: {
-      type: Number,
-      default: -1
+        handles: {codejam: String, hackerearth: String, codechef: String, hackerrank: String, interviewbit: String, codeforces: String, hackercup: String, kickstart: String},
+        rating: {
+            type: Number,
+            default: -1
+        },
+        volatility: {
+            type: Number,
+            default: -1
+        },
+        timesPlayed: {
+            type: Number,
+            default: -1
+        },
+        lastFive: {
+            type: Number,
+            default: -1
+        },
+        best: {
+            type: Number,
+            default: -1
+        }
     },
-    volatility: {
-      type: Number,
-      default: -1
+    role: {
+        type: String,
+        default: 'student'
     },
-    timesPlayed: {
-      type: Number,
-      default: -1
-    },
-    lastFive: {
-      type: Number,
-      default: -1
-    },
-    best: {
-      type: Number,
-      default: -1
-    },
-  },
-  role: {
-    type: String,
-    default: "student"
-  },
-  files: [mongoose.Schema.Types.ObjectId],
-  isDeleted: {
-    type: Boolean,
-    default: false
-  }
-}, { strict: false, timestamps:true });
+    files: [mongoose.Schema.Types.ObjectId],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
+}, {strict: false, timestamps: true});
 
 // const saltRounds = 10;
 // UserSchema.methods = {
@@ -98,12 +98,12 @@ const UserSchema = new mongoose.Schema({
 // module.exports = mongoose.model('User', UserSchema);
 
 const saltRounds = 10;
-UserSchema.methods.generateHash = function (password) {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds), null);
+UserSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds), null);
 };
 
-UserSchema.methods.checkPassword = function (plainTextPassword) {
-  return bcrypt.compareSync(plainTextPassword, this.password);
-}
+UserSchema.methods.checkPassword = function(plainTextPassword) {
+    return bcrypt.compareSync(plainTextPassword, this.password);
+};
 
 module.exports = mongoose.model('User', UserSchema);

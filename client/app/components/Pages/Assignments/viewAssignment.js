@@ -1,26 +1,25 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import axios from 'axios';
 
 export default class viewAssignment extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            assignment:[]
+            assignment: []
         };
     }
-    componentDidMount(){
-        var token = localStorage.getItem('token');
-        const { match: { params } } = this.props;
-        ///api/assignments/:assignmentID/details
+    componentDidMount() {
+        let token = localStorage.getItem('token');
+        const {match: {params}} = this.props;
+        // /api/assignments/:assignmentID/details
         axios.get(`/api/assignments/${params.assignmentID}/details`)
-        .then(res=> {
-            console.log(res);
-            this.setState({
-                assignment: res.data.data.assignment
+            .then((res)=> {
+                console.log(res);
+                this.setState({
+                    assignment: res.data.data.assignment
+                });
             })
-        
-        })
-        .catch(err => console.log(err))
+            .catch((err) => console.log(err));
     }
     render() {
         let content;
@@ -49,7 +48,7 @@ export default class viewAssignment extends Component {
         return (
             <div>{content}</div>
 
-        )
+        );
     }
 }
 

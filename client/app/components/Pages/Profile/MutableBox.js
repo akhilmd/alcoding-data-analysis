@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-var locale = require('browser-locale')();
+import React, {Component} from 'react';
+let locale = require('browser-locale')();
 
 
 class MutableBox extends React.Component {
@@ -13,17 +13,16 @@ class MutableBox extends React.Component {
         this.edit = this.edit.bind(this);
         this.save = this.save.bind(this);
         this.cancel = this.cancel.bind(this);
-
     }
 
     edit() {
-        this.setState({ isEditing: true });
+        this.setState({isEditing: true});
         this.props.changeEditingStatus(1);
     }
 
     save() {
-        var inp = this.refs.newText.value;
-        var currentState = Object.assign({}, this.state);
+        let inp = this.refs.newText.value;
+        let currentState = Object.assign({}, this.state);
 
         if (inp) {
             currentState.hasChanged = true;
@@ -34,18 +33,18 @@ class MutableBox extends React.Component {
         this.setState(currentState);
     }
 
-    cancel(){
-        this.setState({ isEditing: false });
+    cancel() {
+        this.setState({isEditing: false});
     }
 
     renderNormal() {
-        var fieldValue = this.props.val;
-        if (this.props.field == "dob") {
+        let fieldValue = this.props.val;
+        if (this.props.field == 'dob') {
             let date = new Date(this.props.val);
-            fieldValue = date.toLocaleDateString(locale ? locale : "en-GB");
+            fieldValue = date.toLocaleDateString(locale ? locale : 'en-GB');
         }
 
-        var inputStyle = "color:black;"
+        let inputStyle = 'color:black;';
         // if (this.state.hasChanged) {
         //     inputStyle = "color:red;"
         // }
@@ -58,13 +57,12 @@ class MutableBox extends React.Component {
                     <button onClick={this.edit} type="button" className="btn btn-dark ml-auto">Edit</button>
                 </div>
             </div>
-        )
-
+        );
     }
 
 
     renderEditing() {
-        var inputType = this.props.inputType;
+        let inputType = this.props.inputType;
         return (
             <div>
                 <div className="lead" ><b>{this.props.fieldName}:</b></div>
@@ -79,8 +77,11 @@ class MutableBox extends React.Component {
     }
 
     render() {
-        if (!this.state.isEditing) { return (this.renderNormal()); }
-        else { return (this.renderEditing()); }
+        if (!this.state.isEditing) {
+            return (this.renderNormal());
+        } else {
+            return (this.renderEditing());
+        }
     }
 }
 

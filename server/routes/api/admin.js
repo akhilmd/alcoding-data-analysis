@@ -1,13 +1,13 @@
 const User = require('../../models/User');
 const File = require('../../models/Files');
-var requireRole = require('../../middleware/Token').requireRole;
+let requireRole = require('../../middleware/Token').requireRole;
 // var fileDB = require('../../middleware/fileStorage').fileDB;
-var diskStorage = require('../../middleware/fileStorage').diskStorage;
-var fileUpload = require('../../middleware/fileStorage').fileUpload;
-var retrieveFile = require('../../middleware/fileStorage').retrieveFile;
-var fs = require("fs");
-var dir = process.cwd() + '/../temp';
-var keyName = "inputFile";
+let diskStorage = require('../../middleware/fileStorage').diskStorage;
+let fileUpload = require('../../middleware/fileStorage').fileUpload;
+let retrieveFile = require('../../middleware/fileStorage').retrieveFile;
+let fs = require('fs');
+let dir = process.cwd() + '/../temp';
+let keyName = 'inputFile';
 
 module.exports = (app) => {
     // app.get('/api/admin/createAdmin', function (req, res) {
@@ -84,13 +84,12 @@ module.exports = (app) => {
     //     });
     // }); // end of sign up endpoint
 
-    app.post('/api/admin/signup', requireRole("admin"), function (req, res) {
-
-        var usn = req.body.usn;
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
-        var email = req.body.email;
-        var role = req.body.role;
+    app.post('/api/admin/signup', requireRole('admin'), function(req, res) {
+        let usn = req.body.usn;
+        let firstName = req.body.firstName;
+        let lastName = req.body.lastName;
+        let email = req.body.email;
+        let role = req.body.role;
 
         if (!firstName) {
             return res.status(400).send({
@@ -129,15 +128,19 @@ module.exports = (app) => {
 
             newUser.usn = usn;
             newUser.name.firstName = firstName;
-            if (lastName) { newUser.name.lastName = lastName; }
-            if (email) { newUser.basicInfo.email = email; }
+            if (lastName) {
+                newUser.name.lastName = lastName;
+            }
+            if (email) {
+                newUser.basicInfo.email = email;
+            }
             newUser.password = newUser.generateHash(usn);
-        
+
             if (role) {
-                if (role == "admin") {
+                if (role == 'admin') {
                     return res.status(403).send({
                         success: false,
-                        message: "Error: Forbidden request, Cannot assign role:\"admin\"."
+                        message: 'Error: Forbidden request, Cannot assign role:"admin".'
                     });
                 }
                 newUser.role = role;
@@ -149,7 +152,7 @@ module.exports = (app) => {
                         message: 'Error: Server error'
                     });
                 }
-                console.log(newUser._id + " Added to DB.")
+                console.log(newUser._id + ' Added to DB.');
                 return res.status(200).send({
                     success: true,
                     message: 'Signed up'
@@ -158,19 +161,19 @@ module.exports = (app) => {
         });
     }); // end of sign up endpoint
 
-    app.post('/api/admin/upload', requireRole("admin"), diskStorage(dir).single(keyName), fileUpload, function (req, res) {
+    app.post('/api/admin/upload', requireRole('admin'), diskStorage(dir).single(keyName), fileUpload, function(req, res) {
         if (!req.file) {
             return res.status(400).send({
                 success: false,
-                message: "Error: File not recieved"
+                message: 'Error: File not recieved'
             });
         }
-        if(req.file){
+        if (req.file) {
             return res.status(200).send({
                 success: true,
-                message: "File uploaded and added to DB",
+                message: 'File uploaded and added to DB',
                 data: req.file
             });
         }
     });
-}
+};

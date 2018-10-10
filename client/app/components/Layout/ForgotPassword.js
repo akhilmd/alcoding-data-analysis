@@ -1,40 +1,37 @@
-import React, { Component } from 'react'
-import axios from "axios";
+import React, {Component} from 'react';
+import axios from 'axios';
 
 export default class ForgotPassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            signInUsn: ""
+            signInUsn: ''
         };
         this.onTextboxChangeSignInUsn = this.onTextboxChangeSignInUsn.bind(this);
         this.sendEmail = this.sendEmail.bind(this);
-
     }
 
     onTextboxChangeSignInUsn(event) {
         event.preventDefault();
         this.setState({
-            signInUsn: event.target.value,
+            signInUsn: event.target.value
         });
-
     }
 
     sendEmail() {
         // /api/account/forgotPassword
-        var config = {
+        let config = {
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             }
-          }
-        var data = {USN: this.state.signInUsn}
-        axios.post("/api/account/forgotPassword",data, config)
-        .then(res=> {
-            console.log(res);
-            alert(res.data.message);
-        })
-        .catch(err=> console.log(err))
-
+        };
+        let data = {USN: this.state.signInUsn};
+        axios.post('/api/account/forgotPassword', data, config)
+            .then((res)=> {
+                console.log(res);
+                alert(res.data.message);
+            })
+            .catch((err)=> console.log(err));
     }
 
     render() {
@@ -55,6 +52,6 @@ export default class ForgotPassword extends Component {
                     <button className="btn btn-danger" onClick={this.sendEmail}>Send Email</button>
                 </div>
             </div>
-        )
+        );
     }
 }

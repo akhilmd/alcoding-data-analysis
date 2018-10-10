@@ -1,24 +1,24 @@
 export function getFromStorage(key) {
     if (!key) {
-      return null;
+        return null;
     }
     try {
-      const valueStr = localStorage.getItem(key);
-      if (valueStr) {
-        return JSON.parse(valueStr);
-      }
-      return null;
+        const valueStr = localStorage.getItem(key);
+        if (valueStr) {
+            return JSON.parse(valueStr);
+        }
+        return null;
     } catch (err) {
-      return null;
+        return null;
     }
-  }
-  export function setInStorage(key, obj) {
+}
+export function setInStorage(key, obj) {
     if (!key) {
-      console.error('Error: Key is missing');
+        console.error('Error: Key is missing');
     }
     try {
-      localStorage.setItem(key, JSON.stringify(obj));
+        localStorage.setItem(key, JSON.stringify(obj));
     } catch (err) {
-      console.error(err);
+        console.error(err);
     }
-  }
+}

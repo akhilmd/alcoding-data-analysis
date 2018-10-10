@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
-import { Link, Redirect } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import AssignmentCard from '../Assignments/AssignmentCard';
 class AssignmentAdd extends Component {
     constructor(props) {
@@ -31,86 +31,86 @@ class AssignmentAdd extends Component {
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
     }
     componentDidMount() {
-        var self = this;
-        const { match: { params } } = this.props;
+        let self = this;
+        const {match: {params}} = this.props;
 
-        var token = localStorage.getItem('token')
-        ///api/assignments/:courseID/assignments
+        let token = localStorage.getItem('token');
+        // /api/assignments/:courseID/assignments
         axios.get(`/api/assignments/${params.courseID}/assignments`, {
             headers: {
-                'x-access-token': token,
+                'x-access-token': token
             }
-        }).then(function (response) {
+        }).then(function(response) {
             if (!response.data.success) {
-                console.log("Error1: " + response.data);
+                console.log('Error1: ' + response.data);
             }
-            var data = response.data;
+            let data = response.data;
             self.setState({
                 assignments: self.state.assignments.concat(data.assignments.assignments)
             });
             console.log(response.data);
         })
-            .catch(function (error) {
+            .catch(function(error) {
                 console.log('Error2: ', error);
             });
     }
     handleNameChange(e) {
         this.setState({
             name: e.target.value
-        })
+        });
     }
     handleUniqueidChange(e) {
         this.setState({
             uniqueID: e.target.value
-        })
+        });
     }
     handleTypeChange(e) {
         this.setState({
             type: e.target.value
-        })
+        });
     }
     handleDetailsChange(e) {
         this.setState({
             details: e.target.value
-        })
+        });
     }
     handleMarksChange(e) {
         this.setState({
             maxMarks: e.target.value
-        })
+        });
     }
     handleURLChange(e) {
         this.setState({
             resourcesUrl: e.target.value
-        })
+        });
     }
     handleStartDateChange(e) {
         this.setState({
             startDate: e.target.value
-        })
+        });
     }
     handleEndDateChange(e) {
         this.setState({
             endDate: e.target.value
-        })
+        });
     }
     reload() {
-        window.location.reload()
+        window.location.reload();
     }
     onAdd() {
-        ///api/assignment/:userID/createAssignment
-        var self = this;
-        var userID = localStorage.getItem('user_id');
-        var token = localStorage.getItem('token');
-        const { match: { params } } = this.props;
+        // /api/assignment/:userID/createAssignment
+        let self = this;
+        let userID = localStorage.getItem('user_id');
+        let token = localStorage.getItem('token');
+        const {match: {params}} = this.props;
 
-        var config = {
+        let config = {
             headers: {
                 'x-access-token': token,
                 'Content-Type': 'application/json'
             }
-        }
-        var data = Object.assign({}, self.state.assignment);
+        };
+        let data = Object.assign({}, self.state.assignment);
         data.name = self.state.name;
         data.uniqueId = self.state.uniqueID;
         data.type = self.state.type;
@@ -118,29 +118,29 @@ class AssignmentAdd extends Component {
         data.maxMarks = self.state.maxMarks;
         data.details = self.state.details;
         data.resourcesUrl = self.state.resourcesUrl;
-        var duration = { startDate: self.state.startDate, endDate: self.state.endDate }
+        let duration = {startDate: self.state.startDate, endDate: self.state.endDate};
         data.duration = duration;
-        data = JSON.stringify(data)
-        console.log(data)
+        data = JSON.stringify(data);
+        console.log(data);
         axios.post(`/api/assignments/${userID}/createAssignment`, data, config)
-            .then(res => {
+            .then((res) => {
                 console.log(res.data);
                 this.reload();
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                alert('Assignment Failed to Upload!')
-            })
+                alert('Assignment Failed to Upload!');
+            });
     }
     showForm() {
         this.setState({
             show: true
-        })
+        });
     }
     closeForm() {
         this.setState({
             show: false
-        })
+        });
     }
     render() {
         let content;
@@ -180,12 +180,12 @@ class AssignmentAdd extends Component {
                     </div>
                 </form>
             </div>
-        )
+        );
         const AssignmentContent = (
             <div>
                 {
-                    this.state.assignments.map(function (each) {
-                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />
+                    this.state.assignments.map(function(each) {
+                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />;
                     })
                 }
             </div>

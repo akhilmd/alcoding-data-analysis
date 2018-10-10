@@ -1,13 +1,13 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 import axios from 'axios';
 
 class PasswordBox extends Component {
     constructor() {
         super();
         this.state = {
-            oldPassword: "",
-            newPassword: "",
-            confirmNewPassword: ""
+            oldPassword: '',
+            newPassword: '',
+            confirmNewPassword: ''
         };
 
         this.changeOldPassword = this.changeOldPassword.bind(this);
@@ -18,66 +18,60 @@ class PasswordBox extends Component {
     changeOldPassword(event) {
         event.preventDefault();
         this.setState({
-            oldPassword: event.target.value,
+            oldPassword: event.target.value
         });
-
     }
 
     changeNewPassword(event) {
         event.preventDefault();
         this.setState({
-            newPassword: event.target.value,
+            newPassword: event.target.value
         });
-
     }
 
     changeConfirmNewPassword(event) {
         event.preventDefault();
         this.setState({
-            confirmNewPassword: event.target.value,
+            confirmNewPassword: event.target.value
         });
-
     }
 
 
     confirmPasswordChange() {
-        //api call to change password comes here
-        var userID = localStorage.getItem("user_id");
-        var token = localStorage.getItem('token');
-        var body = {
+        // api call to change password comes here
+        let userID = localStorage.getItem('user_id');
+        let token = localStorage.getItem('token');
+        let body = {
             oldPassword: this.state.oldPassword,
             newPassword: this.state.newPassword
-        }
-        //api/account/:userID/password
+        };
+        // api/account/:userID/password
         if (this.state.newPassword != this.state.confirmNewPassword) {
-            alert("Passwords do not match.");
-        }
-        else if (this.state.oldPassword == this.state.newPassword) {
-            alert("New Password cannot be same as old password.");
-        }
-        else {
+            alert('Passwords do not match.');
+        } else if (this.state.oldPassword == this.state.newPassword) {
+            alert('New Password cannot be same as old password.');
+        } else {
             axios.post(`api/account/${userID}/changePassword`, body, {
                 headers: {
                     'x-access-token': token,
                     'Content-Type': 'application/json'
                 }
-            }).then(res => {
-
+            }).then((res) => {
                 if (res.data.success) {
                     console.log(res.data);
-                    alert("Password change successfull!")
+                    alert('Password change successfull!');
                     window.location.reload();
                 }
             })
-                .catch(err => {
+                .catch((err) => {
                     console.log(err);
-                    alert("Error changing the password. Please try again.");
-                })
+                    alert('Error changing the password. Please try again.');
+                });
         }
     }
 
     render() {
-        return(
+        return (
             <div>
                 <button type="button" className="btn btn-info ml-0 mb-2" data-toggle="modal" data-target="#myModal">Change Password</button>
 
@@ -132,8 +126,8 @@ class PasswordBox extends Component {
 
                     </div>
                 </div>
-                </div>
-        )
+            </div>
+        );
     }
 }
 

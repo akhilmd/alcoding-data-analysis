@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom';
+import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 class SubmissionsCard extends Component {
     constructor(props) {
         super(props);
-        }
+    }
 
-    openWindow(){
+    openWindow() {
         // <Link className="btn btn-dark" to={{
         //     pathname: '/download/' + this.props.fileID
         // }}> Download Submission </Link>
@@ -21,7 +21,7 @@ class SubmissionsCard extends Component {
                     <div className="card-body text-left">
                         Name : {this.props.user}<br />
                         FileID : {this.props.fileID} <br /><br />
-                        <button className="btn btn-dark" onClick={()=>window.open("/download/"+this.props.fileID)}> Download Submission </button>
+                        <button className="btn btn-dark" onClick={()=>window.open('/download/'+this.props.fileID)}> Download Submission </button>
                     </div>
 
                 </div>
@@ -32,7 +32,7 @@ class SubmissionsCard extends Component {
         return (
             <div>{content}</div>
 
-        )
+        );
     }
 }
 export default SubmissionsCard;

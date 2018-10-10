@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react';
 
 export default class Courses extends Component {
-  render() {
-    return (
-      <div>
+    render() {
+        return (
+            <div>
         Courses Page
-      </div>
-    )
-  }
+            </div>
+        );
+    }
 }

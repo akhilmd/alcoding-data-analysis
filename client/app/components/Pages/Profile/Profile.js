@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import axios from 'axios';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import StaticBox from './StaticBox.js';
 import MutableBox from './MutableBox.js';
@@ -12,56 +12,54 @@ class Profile extends React.Component {
         super();
         this.state = {
             isEditing: 0,
-            usn: "",
-            name: "",
+            usn: '',
+            name: '',
             basicInfo: {}
         };
         this.updateValue = this.updateValue.bind(this);
         this.changeEditingStatus = this.changeEditingStatus.bind(this);
         this.onConfirm = this.onConfirm.bind(this);
-
     }
 
 
     componentDidMount() {
+        let self = this;
+        let token = localStorage.getItem('token');
+        let userID = localStorage.getItem('user_id');
 
-        var self = this;
-        var token = localStorage.getItem('token')
-        var userID = localStorage.getItem('user_id')
-
-        var apiPath = '/api/account/' + userID + '/details'
+        let apiPath = '/api/account/' + userID + '/details';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,
                 'Content-Type': 'application/json'
             }
         })
-            .then(function (response) {
+            .then(function(response) {
                 if (!response.data.success) {
                     // TODO: throw appropriate error and redirect
-                    console.log("Error: " + response.data);
+                    console.log('Error: ' + response.data);
                     return;
                 }
-                var data = response.data;
+                let data = response.data;
                 // TODO: Update dob with calendar
                 self.setState({
                     usn: data.user.usn,
-                    name: data.user.name.firstName + " " + data.user.name.lastName,
+                    name: data.user.name.firstName + ' ' + data.user.name.lastName,
                     basicInfo: data.user.basicInfo
                 });
             })
-            .catch(function (error) {
-                // TODO: Try again after sometime? 
+            .catch(function(error) {
+                // TODO: Try again after sometime?
                 console.log('error is ', error);
             });
     }
 
     updateValue(field, newVal) {
         // TODO: Some Form validation based on field
-        var basicInfoCopy = Object.assign({}, this.state.basicInfo);
+        let basicInfoCopy = Object.assign({}, this.state.basicInfo);
         basicInfoCopy[field] = newVal;
-        this.setState({ basicInfo: basicInfoCopy });
-        console.log(this.state.basicInfo)
+        this.setState({basicInfo: basicInfoCopy});
+        console.log(this.state.basicInfo);
     }
 
     changeEditingStatus(value) {
@@ -70,15 +68,15 @@ class Profile extends React.Component {
 
     onConfirm() {
         if (this.state.isEditing) {
-            alert("Please save changes before confirming.");
+            alert('Please save changes before confirming.');
             return;
         }
 
-        var token = localStorage.getItem('token')
-        var userID = localStorage.getItem('user_id')
-        var apiPath = '/api/account/' + userID + '/basicInfo'
+        let token = localStorage.getItem('token');
+        let userID = localStorage.getItem('user_id');
+        let apiPath = '/api/account/' + userID + '/basicInfo';
 
-        var basicInfoUpdated = Object.assign({}, this.state.basicInfo)
+        let basicInfoUpdated = Object.assign({}, this.state.basicInfo);
 
         axios.put(
             apiPath,
@@ -89,26 +87,25 @@ class Profile extends React.Component {
                     'Content-Type': 'application/json'
                 }
             })
-            .then(function (response) {
+            .then(function(response) {
                 if (!response.data.success) {
                     // TODO: throw appropriate error and redirect
-                    console.log("Error: " + response.data);
+                    console.log('Error: ' + response.data);
                     return;
-                }
-                else {
+                } else {
                     // TODO: redirect to this page(profile)
                     console.log(response.data);
                     alert('Details Updated!');
                 }
             })
-            .catch(function (error) {
-                // TODO: Try again after sometime? 
+            .catch(function(error) {
+                // TODO: Try again after sometime?
                 console.log('error is ', error);
             });
     }
 
     render() {
-        const { isAuthenticated, user } = this.props.auth;
+        const {isAuthenticated, user} = this.props.auth;
 
         return (
             <div className="container col-md-8">
@@ -120,11 +117,11 @@ class Profile extends React.Component {
                         <StaticBox fieldName="USN" val={this.state.usn} />
 
                         <hr />
-                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="phone" inputType="text" fieldName="Phone" val={this.state.basicInfo["phone"]} />
+                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="phone" inputType="text" fieldName="Phone" val={this.state.basicInfo['phone']} />
                         <hr />
-                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="email" inputType="email" fieldName="Email ID" val={this.state.basicInfo["email"]} />
+                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="email" inputType="email" fieldName="Email ID" val={this.state.basicInfo['email']} />
                         <hr />
-                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="dob" inputType="date" fieldName="Date of Birth" val={this.state.basicInfo["dob"]} />
+                        <MutableBox updateFieldValue={this.updateValue} changeEditingStatus={this.changeEditingStatus} field="dob" inputType="date" fieldName="Date of Birth" val={this.state.basicInfo['dob']} />
                         <hr />
 
                         <button onClick={this.onConfirm} type="button" className="btn btn-dark mb-4 ">Confirm Changes</button>
@@ -137,7 +134,7 @@ class Profile extends React.Component {
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     auth: state.auth,
     errors: state.errors
 });
