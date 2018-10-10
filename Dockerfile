@@ -7,11 +7,10 @@ FROM base as development
 ENV NODE_ENV development
 COPY package.json package-lock.json ./
 RUN npm install
-COPY .babelrc webpack.config.js server.js ./
+COPY .babelrc .eslintrc.json webpack.config.js server.js ./
 COPY client ./client
 COPY config ./config
 COPY server ./server
-CMD ["npm", "start"]
 
 FROM development as build
 ENV NODE_ENV=production
