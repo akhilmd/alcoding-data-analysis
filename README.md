@@ -26,6 +26,24 @@ $ sudo curl -L "https://github.com/docker/compose/releases/download/1.22.0/docke
 $ sudo chmod +x /usr/local/bin/docker-compose
 $ docker-compose --version # Verify Installation
 ```
+### Get the Source Code:
+- Fork this repository.
+- Clone your fork. Replace `YOUR_USERNAME` with your real GitHub account username.
+```shell
+$ git clone https://github.com/YOUR_USERNAME/alcoding-data-analysis.git
+```
+- Change Directory to the project using `$ cd alcoding-data-analysis`.
+- Set up the `upstream` remote in local clone of fork:
+```shell
+$ git remote add upstream https://github.com/akhilmd/alcoding-data-analysis.git
+```
+- Now, the source code has been set up.
+- If you want to update your local branch (replace `BRANCH` with the branch name you created) with new changes in this repository's master branch:
+```shell
+$ git checkout BRANCH
+$ git fetch upstream
+$ git rebase upstream/master
+```
 ### Build docker services:
 ```shell
 $ docker-compose build
