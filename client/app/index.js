@@ -4,10 +4,14 @@ import {render} from 'react-dom';
 import {
     BrowserRouter as Router,
     Route,
-    Link,
+    // Link,
     Switch
 } from 'react-router-dom';
-import {setCurrentUser, logoutUser, loginUser} from './actions/authActions';
+import {
+    setCurrentUser
+    // logoutUser,
+    // loginUser
+} from './actions/authActions';
 import {Provider} from 'react-redux';
 import store from '../app/store/store';
 import PrivateRoute from '../app/components/common/PrivateRoute';
@@ -22,7 +26,7 @@ import NotFound from './components/App/NotFound';
 import SignupForm from '../app/components/Admin/SignupForm';
 import AssignmentAdd from '../app/components/Pages/Courses/AddAssignment';
 import viewSubmissions from './components/Pages/Assignments/viewSubmissions';
-import viewAssignment from './components/Pages/Assignments/viewAssignment';
+// import viewAssignment from './components/Pages/Assignments/viewAssignment';
 import ForgotPassword from './components/Layout/ForgotPassword';
 import ChangePassword from './components/Layout/ChangePassword';
 import downloadFile from './components/Pages/Assignments/downloadFile';

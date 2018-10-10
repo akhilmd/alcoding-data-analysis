@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+/* eslint react/prop-types: 0 */
+
+import React from 'react';
 
 class StaticBox extends React.Component {
     constructor(props) {

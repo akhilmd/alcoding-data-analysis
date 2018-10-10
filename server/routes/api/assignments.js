@@ -136,7 +136,7 @@ module.exports = (app) => {
                     });
                 }
                 if (assignments) {
-                    var assignments = {assignments};
+                    assignments = {assignments};
                 }
                 return res.status(200).send({
                     success: true,
@@ -147,271 +147,297 @@ module.exports = (app) => {
         });
     });
 
-    app.post('/api/courses/:userID/createCourse', requireRole('prof'), function(req, res) {
-        if (!req.params.userID) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: userID not in parameters. Please try again.'
-            });
-        }
-
-        if (!req.body.name) {
-            return res.status(400).send({
-                success: false,
-                message: 'Course name required.'
-            });
-        }
-
-        if (!req.body.code) {
-            return res.status(400).send({
-                success: false,
-                message: 'Course code required.'
-            });
-        }
-
-        if (!req.body.department) {
-            return res.status(400).send({
-                success: false,
-                message: 'Department required.'
-            });
-        }
-
-        Course.find({
-            code: req.body.code,
-            isDeleted: false
-        }, (err, previousCourse) => {
-            if (err) {
-                return res.status(500).send({
+    app.post('/api/courses/:userID/createCourse',
+        requireRole('prof'),
+        function(req, res) {
+            if (!req.params.userID) {
+                return res.status(400).send({
                     success: false,
-                    message: 'Error: Server Error'
+                    message:
+                        'Error: userID not in parameters. Please try again.'
                 });
             }
-            if (previousCourse.length > 0) {
-                return res.status(409).send({
+
+            if (!req.body.name) {
+                return res.status(400).send({
                     success: false,
-                    message: 'Error: Course already exists'
+                    message: 'Course name required.'
                 });
             }
-            // save the course
-            const newCourse = new Course();
 
-            newCourse.name = req.body.name;
-            newCourse.code = req.body.code;
-            newCourse.department = req.body.department;
-            newCourse.description = req.body.description;
-            newCourse.resourcesUrl = req.body.resourcesUrl;
-            newCourse.duration.startDate = req.body.startDate;
-            newCourse.duration.endDate = req.body.endDate;
-            newCourse.details.credits = req.body.credits;
-            newCourse.details.hours = req.body.hours;
-            newCourse.professors.push(req.params.userID);
-            // console.log(newCourse)
+            if (!req.body.code) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Course code required.'
+                });
+            }
 
-            newCourse.save((err, course) => {
+            if (!req.body.department) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Department required.'
+                });
+            }
+
+            Course.find({
+                code: req.body.code,
+                isDeleted: false
+            }, (err, previousCourse) => {
                 if (err) {
                     return res.status(500).send({
                         success: false,
-                        message: 'Error: Server error'
+                        message: 'Error: Server Error'
                     });
                 }
-                console.log(newCourse._id + ' Added to DB');
-                return res.status(200).send({
-                    success: true,
-                    message: 'New course created'
-                });
-            });
-        });
-    });
-
-    app.post('/api/assignments/:userID/createAssignment', requireRole('prof'), function(req, res) {
-        if (!req.params.userID) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: userID not in parameters. Please try again.'
-            });
-        }
-
-        if (!req.body.name) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: First name cannot be blank.'
-            });
-        }
-        if (!req.body.uniqueId) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: uniqueId cannot be blank'
-            });
-        }
-        if (!req.body.type) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: type cannot be blank'
-            });
-        }
-        if (!req.body.courseID) {
-            return res.status(400).send({
-                success: false,
-                message: 'Error: courseID cannot be blank'
-            });
-        }
-
-        Course.find({
-            _id: req.body.courseID,
-            isDeleted: false,
-            professors: req.params.userID
-        }, function(err, courses) {
-            if (err) {
-                return res.status(500).send({
-                    success: false,
-                    message: 'Error: Server error'
-                });
-            }
-            if (courses.length == 0) {
-                return res.status(404).send({
-                    success: false,
-                    message: 'Error: No courses found for this user.'
-                });
-            }
-
-            let assignment = new Assignment();
-            assignment.course = req.body.courseID;
-            assignment.name = req.body.name;
-            assignment.uniqueID = req.body.uniqueId;
-            assignment.type = req.body.type;
-            assignment.details = req.body.details;
-            assignment.maxMarks = req.body.maxMarks;
-            assignment.resourcesUrl = req.body.resourcesUrl;
-            assignment.duration.startDate = req.body.startDate;
-            assignment.duration.endDate = req.body.endDate;
-            assignment.POC = req.body.POC;
-
-            assignment.save(function(err, assignment) {
-                if (err) {
-                    return res.status(500).send({
+                if (previousCourse.length > 0) {
+                    return res.status(409).send({
                         success: false,
-                        message: 'Error: server error'
+                        message: 'Error: Course already exists'
                     });
                 }
-                console.log('Assignment ' + assignment._id + ' saved to DB');
-                Course.findOneAndUpdate({
-                    _id: assignment.course
-                }, {
-                    $push: {
-                        assignments: assignment._id
-                    }
-                }, {new: true}, function(err, course) {
-                    if (err) {
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Error: server error'
-                        });
-                    }
-                    console.log('Assignment ' + assignment._id + ' added to course ' + course._id);
-                    return res.status(200).send({
-                        success: true,
-                        message: 'Assignment ' + assignment._id + ' added to DB'
-                    });
-                });
-            });
-        });
-    });
+                // save the course
+                const newCourse = new Course();
 
-    app.all('/api/assignments/:userID/:assignmentID/upload', verifyUser, diskStorage(dir).single(keyName), fileUpload, function(req, res, next) {
-        Assignment.findOneAndUpdate({
-            _id: req.params.assignmentID,
-            isDeleted: false
-        }, {
-            $push: {
-                submissions: {
-                    'user': req.params.userID
-                }
-            }
-        }, {new: true}, function(err, assignment) {
-            if (err) {
-                return res.status(500).send({
-                    success: false,
-                    message: 'Error: server error'
-                });
-            }
-            let submissions = [];
-            for (let i=0; i<assignment.submissions.length; i++) {
-                let submission = assignment.submissions[i];
-                if (submission.user!=req.params.userID) {
-                    submissions.push(submission);
-                }
-            }
-            File.find({
-                user_id: req.user_id,
-                originalname: req.file.originalname
-            }, function(err, files) {
-                if (err) {
-                    return res.status(500).send({
-                        success: false,
-                        message: 'Error: Server error'
-                    });
-                }
-                req.fileID = files[files.length-1]._id; // Get Latest file submitted by user
-                let object = {'user': req.user_id, 'file': req.fileID};
-                submissions.push(object);
+                newCourse.name = req.body.name;
+                newCourse.code = req.body.code;
+                newCourse.department = req.body.department;
+                newCourse.description = req.body.description;
+                newCourse.resourcesUrl = req.body.resourcesUrl;
+                newCourse.duration.startDate = req.body.startDate;
+                newCourse.duration.endDate = req.body.endDate;
+                newCourse.details.credits = req.body.credits;
+                newCourse.details.hours = req.body.hours;
+                newCourse.professors.push(req.params.userID);
+                // console.log(newCourse)
 
-                Assignment.findOneAndUpdate({
-                    _id: req.params.assignmentID,
-                    isDeleted: false
-                }, {
-                    '$set': {
-                        submissions: submissions
-                    }
-                }, null, function(err, assignment) {
+                newCourse.save((err, course) => {
                     if (err) {
                         return res.status(500).send({
                             success: false,
                             message: 'Error: Server error'
                         });
                     }
-                    console.log('User ' + req.params.userID + ' has successfully submitted the assignment');
+                    console.log(newCourse._id + ' Added to DB');
                     return res.status(200).send({
                         success: true,
-                        message: 'User ' + req.params.userID + ' has successfully submitted the assignment'
+                        message: 'New course created'
                     });
                 });
             });
         });
-    });
 
-    app.get('/api/assignments/:assignmentID/submissions', requireRole('prof'), function(req, res) {
-        Assignment.find({
-            _id: req.params.assignmentID
-        }, function(err, assignments) {
-            if (err) {
-                return res.status(500).send({
+    app.post('/api/assignments/:userID/createAssignment',
+        requireRole('prof'),
+        function(req, res) {
+            if (!req.params.userID) {
+                return res.status(400).send({
                     success: false,
-                    message: 'Error: server error'
+                    message:
+                        'Error: userID not in parameters. Please try again.'
                 });
             }
-            if (!assignments) {
-                return res.status(404).send({
+
+            if (!req.body.name) {
+                return res.status(400).send({
                     success: false,
-                    message: 'Error: No such assignment found'
+                    message: 'Error: First name cannot be blank.'
                 });
             }
-            let assignment = assignments[0];
-            if (assignment.submissions.length) {
-                return res.status(200).send({
-                    success: true,
-                    message: 'Assignment submissions successfully retrieved',
-                    data: {assignment}
-                });
-            } else {
-                return res.status(404).send({
+            if (!req.body.uniqueId) {
+                return res.status(400).send({
                     success: false,
-                    message: 'Error: No submissions for this assignment'
+                    message: 'Error: uniqueId cannot be blank'
                 });
             }
+            if (!req.body.type) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: type cannot be blank'
+                });
+            }
+            if (!req.body.courseID) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: courseID cannot be blank'
+                });
+            }
+
+            Course.find({
+                _id: req.body.courseID,
+                isDeleted: false,
+                professors: req.params.userID
+            }, function(err, courses) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: Server error'
+                    });
+                }
+                if (courses.length == 0) {
+                    return res.status(404).send({
+                        success: false,
+                        message: 'Error: No courses found for this user.'
+                    });
+                }
+
+                let assignment = new Assignment();
+                assignment.course = req.body.courseID;
+                assignment.name = req.body.name;
+                assignment.uniqueID = req.body.uniqueId;
+                assignment.type = req.body.type;
+                assignment.details = req.body.details;
+                assignment.maxMarks = req.body.maxMarks;
+                assignment.resourcesUrl = req.body.resourcesUrl;
+                assignment.duration.startDate = req.body.startDate;
+                assignment.duration.endDate = req.body.endDate;
+                assignment.POC = req.body.POC;
+
+                assignment.save(function(err, assignment) {
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: server error'
+                        });
+                    }
+                    console.log(
+                        'Assignment ' + assignment._id + ' saved to DB');
+                    Course.findOneAndUpdate({
+                        _id: assignment.course
+                    }, {
+                        $push: {
+                            assignments: assignment._id
+                        }
+                    }, {new: true}, function(err, course) {
+                        if (err) {
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: server error'
+                            });
+                        }
+                        console.log(
+                            'Assignment ' + assignment._id +
+                            ' added to course ' + course._id);
+                        return res.status(200).send({
+                            success: true,
+                            message:
+                                'Assignment ' + assignment._id + ' added to DB'
+                        });
+                    });
+                });
+            });
         });
-    });
 
-    app.get('/api/assignments/:fileID/download', requireRole('prof'), downloadFile(dir));
+    app.all('/api/assignments/:userID/:assignmentID/upload',
+        verifyUser,
+        diskStorage(dir).single(keyName),
+        fileUpload,
+        function(req, res, next) {
+            Assignment.findOneAndUpdate({
+                _id: req.params.assignmentID,
+                isDeleted: false
+            }, {
+                $push: {
+                    submissions: {
+                        'user': req.params.userID
+                    }
+                }
+            }, {new: true}, function(err, assignment) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: server error'
+                    });
+                }
+                let submissions = [];
+                for (let i=0; i<assignment.submissions.length; i++) {
+                    let submission = assignment.submissions[i];
+                    if (submission.user!=req.params.userID) {
+                        submissions.push(submission);
+                    }
+                }
+                File.find({
+                    user_id: req.user_id,
+                    originalname: req.file.originalname
+                }, function(err, files) {
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: Server error'
+                        });
+                    }
+                    // Get Latest file submitted by user
+                    req.fileID = files[files.length-1]._id;
+                    let object = {'user': req.user_id, 'file': req.fileID};
+                    submissions.push(object);
+
+                    Assignment.findOneAndUpdate({
+                        _id: req.params.assignmentID,
+                        isDeleted: false
+                    }, {
+                        '$set': {
+                            submissions: submissions
+                        }
+                    }, null, function(err, assignment) {
+                        if (err) {
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: Server error'
+                            });
+                        }
+                        console.log(
+                            'User '
+                            + req.params.userID
+                            + ' has successfully submitted the assignment');
+                        return res.status(200).send({
+                            success: true,
+                            message:
+                                'User '
+                                + req.params.userID
+                                + ' has successfully submitted the assignment'
+                        });
+                    });
+                });
+            });
+        });
+
+    app.get('/api/assignments/:assignmentID/submissions',
+        requireRole('prof'),
+        function(req, res) {
+            Assignment.find({
+                _id: req.params.assignmentID
+            }, function(err, assignments) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: server error'
+                    });
+                }
+                if (!assignments) {
+                    return res.status(404).send({
+                        success: false,
+                        message: 'Error: No such assignment found'
+                    });
+                }
+                let assignment = assignments[0];
+                if (assignment.submissions.length) {
+                    return res.status(200).send({
+                        success: true,
+                        message:
+                            'Assignment submissions successfully retrieved',
+                        data: {assignment}
+                    });
+                } else {
+                    return res.status(404).send({
+                        success: false,
+                        message: 'Error: No submissions for this assignment'
+                    });
+                }
+            });
+        });
+
+    app.get('/api/assignments/:fileID/download',
+        requireRole('prof'),
+        downloadFile(dir));
 
     app.get('/api/assignments/:assignmentID/details', function(req, res) {
         Assignment.find({

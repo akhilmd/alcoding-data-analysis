@@ -9,7 +9,7 @@ export default class viewAssignment extends Component {
         };
     }
     componentDidMount() {
-        let token = localStorage.getItem('token');
+        // let token = localStorage.getItem('token');
         const {match: {params}} = this.props;
         // /api/assignments/:assignmentID/details
         axios.get(`/api/assignments/${params.assignmentID}/details`)

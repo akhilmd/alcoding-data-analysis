@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 
 import axios from 'axios';
-import {Link, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 
 // import StaticBox from './StaticBox.js';
 
-import PasswordBox from '../Pages/Profile/PasswordBox';
+// import PasswordBox from '../Pages/Profile/PasswordBox';
 
 class ChangePassword extends Component {
     constructor() {
@@ -36,11 +36,11 @@ class ChangePassword extends Component {
 
     confirmPasswordChange() {
         const {match: {params}} = this.props;
-        let user_ID = params.userID;
+        let userID = params.userID;
         let token = params.token;
 
         let body = {
-            userID: user_ID,
+            userID: userID,
             newPassword: this.state.newPassword
         };
         // api/account/:userID/newPassword
@@ -48,7 +48,7 @@ class ChangePassword extends Component {
             alert('Passwords do not match.');
         } else {
             // api call needs to be updated
-            axios.post(`/api/account/${user_ID}/newPassword`, body, {
+            axios.post(`/api/account/${userID}/newPassword`, body, {
                 headers: {
                     'x-access-token': token,
                     'Content-Type': 'application/json'

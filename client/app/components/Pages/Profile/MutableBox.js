@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+/* eslint-disable react/prop-types, react/no-string-refs */
+
+import React from 'react';
 let locale = require('browser-locale')();
 
 
@@ -44,7 +46,7 @@ class MutableBox extends React.Component {
             fieldValue = date.toLocaleDateString(locale ? locale : 'en-GB');
         }
 
-        let inputStyle = 'color:black;';
+        // let inputStyle = 'color:black;';
         // if (this.state.hasChanged) {
         //     inputStyle = "color:red;"
         // }

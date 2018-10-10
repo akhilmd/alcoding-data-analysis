@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types, react/no-string-refs */
+
 import React, {Component} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 class CourseCard extends Component {
     constructor(props) {

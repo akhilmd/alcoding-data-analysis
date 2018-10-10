@@ -99,11 +99,11 @@ module.exports = (app) => {
     }), // end of sign in endpoint
 
     app.post('/api/account/:userID/changePassword', verifyUser, function(req, res) {
-        let user_id = req.params.userID;
+        let userID = req.params.userID;
         let oldPassword = req.body.oldPassword;
         let newPassword = req.body.newPassword;
 
-        if (!user_id) {
+        if (!userID) {
             return res.status(400).send({
                 success: false,
                 message: 'Error: userID not entered in parameters'
@@ -123,7 +123,7 @@ module.exports = (app) => {
         }
 
         User.find({
-            _id: user_id,
+            _id: userID,
             isDeleted: false
         }, function(err, users) {
             if (err) {
@@ -142,7 +142,7 @@ module.exports = (app) => {
             if (user.checkPassword(oldPassword, user.password)) {
                 newPassword = user.generateHash(newPassword);
                 User.findByIdAndUpdate({
-                    _id: user_id
+                    _id: userID
                 }, {
                     $set: {
                         password: newPassword
@@ -217,9 +217,9 @@ module.exports = (app) => {
 
     app.get('/api/account/:userID/logout', verifyUser, function(req, res) {
         // GET http://localhost:8080/api/account/:userID/logout
-        let user_id = req.params.userID;
+        let userID = req.params.userID;
 
-        if (!user_id) {
+        if (!userID) {
             return res.status(400).send({
                 success: false,
                 message: 'Error: UserID parameter cannot be blank'
@@ -251,20 +251,20 @@ module.exports = (app) => {
 
     app.get('/api/account/:userID/details', function(req, res) {
         // GET http://localhost:8080/api/account/:userID/details
-        let user_id = req.params.userID;
+        let userID = req.params.userID;
 
         // Verify that userID is present as a parameter
-        if (!user_id) {
+        if (!userID) {
             return res.status(400).send({
                 success: false,
                 message: 'Error: userID parameter cannot be blank'
             });
         }
 
-        console.log('Request to access details of ' + user_id);
+        console.log('Request to access details of ' + userID);
         // Search for the user in the User model with his user_id
         User.find({
-            _id: user_id
+            _id: userID
         }, (err, users) => {
             if (err) {
                 return res.status(500).send({
@@ -296,21 +296,21 @@ module.exports = (app) => {
 
     app.put('/api/account/:userID/basicInfo', verifyUser, function(req, res) {
     // PUT http://localhost:8080/api/account/:userID/basicInfo
-        let user_id = req.params.userID;
+        let userID = req.params.userID;
 
         // Verify that userID is present as a parameter
-        if (!user_id) {
+        if (!userID) {
             return res.status(400).send({
                 success: false,
                 message: 'Error: userID parameter cannot be blank'
             });
         }
 
-        console.log('Request to update details of ' + user_id);
+        console.log('Request to update details of ' + userID);
         let update = req.body;
 
         User.findOneAndUpdate({
-            _id: user_id
+            _id: userID
         }, {
             basicInfo: Object.assign({}, update)
         },

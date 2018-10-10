@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Link, Redirect} from 'react-router-dom';
-import viewSubmissions from './viewSubmissions';
+import {Link} from 'react-router-dom';
+// import viewSubmissions from './viewSubmissions';
 
 class AssignmentCard extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ class AssignmentCard extends Component {
 
     componentDidMount() {
         let userID = localStorage.getItem('user_id');
-        let success=0;
+        // let success=0;
         if (this.props.submissions.length) {
             for (let i=0; i<this.props.submissions.length; i++) {
                 let submission = this.props.submissions[i];

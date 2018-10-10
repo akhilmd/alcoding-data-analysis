@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Link, Redirect} from 'react-router-dom';
+// import {Link, Redirect} from 'react-router-dom';
 import CourseCard from '../Courses/CourseCard';
 
 class CoursesAdd extends Component {
@@ -41,7 +41,7 @@ class CoursesAdd extends Component {
         let userID = localStorage.getItem('user_id');
         let token = localStorage.getItem('token');
 
-        var apiPath = '/api/account/' + userID + '/details';
+        let apiPath = '/api/account/' + userID + '/details';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token
@@ -62,7 +62,7 @@ class CoursesAdd extends Component {
                 console.log('Error2: ', error);
             });
         // /api/assignments/:userID/courses
-        var apiPath = 'api/assignments/' + userID + '/courses';
+        apiPath = 'api/assignments/' + userID + '/courses';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,

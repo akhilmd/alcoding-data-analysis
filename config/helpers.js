@@ -1,3 +1,5 @@
+/* eslint-disable prefer-rest-params */
+
 const path = require('path');
 
 // Helper functions

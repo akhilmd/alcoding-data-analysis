@@ -1,3 +1,5 @@
+/* eslint-disable react/no-deprecated */
+
 import React, {Component} from 'react';
 import {Link, Redirect} from 'react-router-dom';
 import PropTypes from 'prop-types';

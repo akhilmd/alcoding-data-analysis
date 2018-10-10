@@ -5,11 +5,12 @@ let privateKey = readFileSync('server/sslcert/server.key', 'utf8'); // privateke
 
 let verifyToken = function(req, res, next) {
     console.log('Verifying token.');
+    let token = null;
     try {
     // x-access-token preferred
-        var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'].split(' ')[1];
+        token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['authorization'].split(' ')[1];
     } catch (err) {
-        var token = undefined;
+        token = undefined;
     }
     if (!token) {
         return res.status(403).send({auth: false, message: 'No token provided.'});

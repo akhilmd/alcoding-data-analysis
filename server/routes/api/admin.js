@@ -1,11 +1,11 @@
 const User = require('../../models/User');
-const File = require('../../models/Files');
+// const File = require('../../models/Files');
 let requireRole = require('../../middleware/Token').requireRole;
 // var fileDB = require('../../middleware/fileStorage').fileDB;
 let diskStorage = require('../../middleware/fileStorage').diskStorage;
 let fileUpload = require('../../middleware/fileStorage').fileUpload;
-let retrieveFile = require('../../middleware/fileStorage').retrieveFile;
-let fs = require('fs');
+// let retrieveFile = require('../../middleware/fileStorage').retrieveFile;
+// let fs = require('fs');
 let dir = process.cwd() + '/../temp';
 let keyName = 'inputFile';
 

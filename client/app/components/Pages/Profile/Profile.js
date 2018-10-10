@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import axios from 'axios';
 import {connect} from 'react-redux';
@@ -63,7 +63,7 @@ class Profile extends React.Component {
     }
 
     changeEditingStatus(value) {
-        this.state.isEditing += value;
+        this.setState({isEditing: isEditing + value});
     }
 
     onConfirm() {
@@ -105,7 +105,7 @@ class Profile extends React.Component {
     }
 
     render() {
-        const {isAuthenticated, user} = this.props.auth;
+        // const {isAuthenticated, user} = this.props.auth;
 
         return (
             <div className="container col-md-8">

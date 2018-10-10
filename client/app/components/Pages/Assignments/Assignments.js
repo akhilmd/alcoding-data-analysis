@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import axios from 'axios';
 import AssignmentCard from './AssignmentCard';
 class Assignments extends Component {
@@ -16,7 +16,7 @@ class Assignments extends Component {
         let token = localStorage.getItem('token');
         let userID = localStorage.getItem('user_id');
 
-        var apiPath = '/api/account/' + userID + '/details';
+        let apiPath = '/api/account/' + userID + '/details';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,
@@ -37,7 +37,7 @@ class Assignments extends Component {
             .catch(function(error) {
                 console.log('Error2: ', error);
             });
-        var apiPath = '/api/assignments/' + userID + '/courses';
+        apiPath = '/api/assignments/' + userID + '/courses';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,

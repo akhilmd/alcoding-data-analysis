@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 import axios from 'axios';
-import {connect} from 'react-redux';
+// import {connect} from 'react-redux';
 
 import ReactTable from 'react-table';
 
@@ -22,7 +22,7 @@ class Contests extends React.Component {
         let token = localStorage.getItem('token');
         let userID = localStorage.getItem('user_id');
 
-        var apiPath = '/api/contests/'+ userID +'/contenderInfo';
+        let apiPath = '/api/contests/'+ userID +'/contenderInfo';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,
@@ -45,7 +45,7 @@ class Contests extends React.Component {
                 console.log('Error: ', error);
             });
 
-        var apiPath = '/api/contests/globalRankList';
+        apiPath = '/api/contests/globalRankList';
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token,
