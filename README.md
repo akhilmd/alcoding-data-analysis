@@ -61,5 +61,6 @@ Now, the application can be accessed at [http://localhost:8000](http://localhost
     - Separate out unrelated changes into multiple commits.
     - Last commit for an issue should have a last line of the form `Fixes #X`, where `X` is the issue number.
 - Send a Pull Request (PR)
+    - Before sending a PR, make sure to run `$ docker-compose -f docker-compose-test.yml up` and correct and linting errors.
     - Once the PR is reviewed, attend to any requested changes.
     - PRs can be updated by updating the branch associated with that PR.
