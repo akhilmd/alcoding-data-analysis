@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { connect } from 'react-redux';
 
-import ReactTable from "react-table";
+// import ReactTable from "react-table";
 
 
 class Contests extends React.Component {
@@ -129,7 +129,7 @@ class Contests extends React.Component {
                         <hr />
                         <div className='display-4 mb-3'>Global Rank List</div>
                         <br />
-                        <ReactTable
+                        {/* <ReactTable
                           data={data}
                           columns={columns}
                           defaultSorted={[
@@ -142,7 +142,7 @@ class Contests extends React.Component {
                           index=""
                           viewIndex=""
                           className="-striped -highlight"
-                        />
+                        /> */}
                         <br />
                     </div>
                 </div>
