@@ -19,7 +19,7 @@ class CourseCard extends Component {
 
     render() {
         let content;
-        const profContent = (
+        const adminContent = (
             <div id="CourseCard">
                 <div className="card bg-light mx-auto">
                     <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
@@ -52,8 +52,10 @@ class CourseCard extends Component {
                 <br />
             </div>
         );
-        if (this.props.role == 'prof') {
-            content = profContent;
+        if (this.props.role == 'admin') {
+            content = adminContent;
+        } else if (this.props.role == 'prof') {
+            content = adminContent;
         } else {
             content = studContent;
         }

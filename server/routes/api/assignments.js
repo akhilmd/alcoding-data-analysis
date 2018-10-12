@@ -19,8 +19,10 @@ module.exports = (app) => {
         }
 
         let search = {isDeleted: false};
-        if (req.role == 'student') search.students = req.user_id;
-        else if (req.role == 'prof') search.professors = req.user_id;
+
+        // Let all courses be visible to everyone
+        // if (req.role == 'student') search.students = req.user_id;
+        // else if (req.role == 'prof') search.professors = req.user_id;
 
         Course.find(search, (err, courses) => {
             if (err) {
@@ -148,7 +150,7 @@ module.exports = (app) => {
     });
 
     app.post('/api/courses/:userID/createCourse',
-        requireRole('prof'),
+        requireRole('admin'),
         function(req, res) {
             if (!req.params.userID) {
                 return res.status(400).send({
@@ -207,6 +209,7 @@ module.exports = (app) => {
                 newCourse.duration.endDate = req.body.endDate;
                 newCourse.details.credits = req.body.credits;
                 newCourse.details.hours = req.body.hours;
+                // This may cause profs to not be able to see courses
                 newCourse.professors.push(req.params.userID);
                 // console.log(newCourse)
 

@@ -227,7 +227,7 @@ class CoursesAdd extends Component {
             </div>
         );
 
-        const profContent = (
+        const adminContent = (
             <div className='row'>
                 <div className='col-sm-7'>
 
@@ -254,7 +254,7 @@ class CoursesAdd extends Component {
 
 
         );
-        const studContent = (
+        const defaultContent = (
             <div>
                 {
                     this.state.courses.map(function(each) {
@@ -264,10 +264,10 @@ class CoursesAdd extends Component {
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
             </div>
         );
-        if (this.state.role == 'prof') {
-            content = profContent;
+        if (this.state.role == 'admin') {
+            content = adminContent;
         } else {
-            content = studContent;
+            content = defaultContent;
         }
 
         return (
