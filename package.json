@@ -12,7 +12,7 @@
   "scripts": {
     "start": "webpack -p --progress --profile --colors && node server",
     "start:dev": "node server",
-    "lint": "./node_modules/.bin/eslint '**/*.js'"
+    "lint": "./node_modules/.bin/eslint --ignore-pattern '**/*.min.js' '**/*.js'"
   },
   "engines": {
     "node": ">=6"
