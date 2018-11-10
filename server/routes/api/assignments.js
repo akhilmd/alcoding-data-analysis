@@ -229,6 +229,75 @@ module.exports = (app) => {
             });
         });
 
+    app.post('/api/assignments/:userID/deleteAssignment',
+        requireRole('prof'),
+        function(req, res) {
+            if (!req.params.userID) {
+                return res.status(400).send({
+                    success: false,
+                    message:
+                        'Error: userID not in parameters. Please try again.'
+                });
+            }
+
+            if (!req.body.assignID) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: Assignment ID cannot be blank.'
+                });
+            }
+
+            if (!req.body.courseID) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: courseID cannot be blank'
+                });
+            }
+
+            Course.find({
+                _id: req.body.courseID,
+                isDeleted: false,
+                professors: req.params.userID
+            }, function(err, courses) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: Server error'
+                    });
+                }
+                if (courses.length == 0) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: No courses found for this user.'
+                    });
+                }
+
+                Assignment.remove( {_id: req.body.assignID}, function(err) {
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: server error: could not delete assignment from Assignments'
+                        });
+                    }
+
+                    Course.update( {_id: req.body.courseID}, {$pullAll: {assignments: [req.body.assignID]}}, function(err) {
+                        if (err) {
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: server error: could not delete assignment from courses'
+                            });
+                        }
+    
+                        return res.status(200).send({
+                            success: true,
+                            message:
+                                'Assignment ' + req.body.assignID+ ' deleted'
+                        });
+                    });
+                });
+            });
+        });
+
     app.post('/api/assignments/:userID/createAssignment',
         requireRole('prof'),
         function(req, res) {
@@ -291,26 +360,31 @@ module.exports = (app) => {
                 assignment.details = req.body.details;
                 assignment.maxMarks = req.body.maxMarks;
                 assignment.resourcesUrl = req.body.resourcesUrl;
-                assignment.duration.startDate = req.body.startDate;
-                assignment.duration.endDate = req.body.endDate;
+                assignment.duration.startDate = req.body.duration.startDate;
+                assignment.duration.endDate = req.body.duration.endDate;
                 assignment.POC = req.body.POC;
 
-                assignment.save(function(err, assignment) {
-                    if (err) {
-                        return res.status(500).send({
-                            success: false,
-                            message: 'Error: server error'
-                        });
-                    }
-                    console.log(
-                        'Assignment ' + assignment._id + ' saved to DB');
-                    Course.findOneAndUpdate({
-                        _id: assignment.course
-                    }, {
-                        $push: {
-                            assignments: assignment._id
+                if (req.body.updateID) {
+                    console.log("updating....", req.body.updateID);
+                    let uAssign = assignment.toObject();
+                    delete uAssign._id;
+                    Assignment.update({_id: req.body.updateID}, uAssign, {multi: false}, function(err) {
+                        if (err) {
+                            console.log(err);
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: server error: could not update'
+                            });
                         }
-                    }, {new: true}, function(err, course) {
+                        console.log("Assignment", req.body.updateID, "Successfully updated!");
+                        return res.status(200).send({
+                            success: true,
+                            message:
+                                'Assignment ' + assignment._id + ' Updated!'
+                        });
+                    });
+                } else {
+                    assignment.save(function(err, assignment) {
                         if (err) {
                             return res.status(500).send({
                                 success: false,
@@ -318,15 +392,31 @@ module.exports = (app) => {
                             });
                         }
                         console.log(
-                            'Assignment ' + assignment._id +
-                            ' added to course ' + course._id);
-                        return res.status(200).send({
-                            success: true,
-                            message:
-                                'Assignment ' + assignment._id + ' added to DB'
+                            'Assignment ' + assignment._id + ' saved to DB');
+                        Course.findOneAndUpdate({
+                            _id: assignment.course
+                        }, {
+                            $push: {
+                                assignments: assignment._id
+                            }
+                        }, {new: true}, function(err, course) {
+                            if (err) {
+                                return res.status(500).send({
+                                    success: false,
+                                    message: 'Error: server error'
+                                });
+                            }
+                            console.log(
+                                'Assignment ' + assignment._id +
+                                ' added to course ' + course._id);
+                            return res.status(200).send({
+                                success: true,
+                                message:
+                                    'Assignment ' + assignment._id + ' added to DB'
+                            });
                         });
                     });
-                });
+                }
             });
         });
 

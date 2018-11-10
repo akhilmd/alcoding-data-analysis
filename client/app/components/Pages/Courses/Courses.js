@@ -227,10 +227,27 @@ class CoursesAdd extends Component {
             </div>
         );
 
+        let addCourse = (
+            <div></div>
+        );
+
+        if (this.state.role == 'admin') {
+            addCourse = (
+                <div className='col-sm-5'>
+                    <div className='card bg-light text-center'>
+                        <div className='card-body'>
+                            {this.state.show ? click : <button type="button" className="btn btn-dark w-50 mx-3" onClick={this.showForm}>Add Course</button>}
+                            {this.state.show ? <button type="submit" className="btn btn-dark mx-3 w-20 " onClick={this.onAdd}>Submit</button> : null}
+                            {this.state.show ? <button type="close" className="btn mx-3 w-20" onClick={this.closeForm}>Close</button> : null}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         const adminContent = (
             <div className='row'>
                 <div className='col-sm-7'>
-
                     <div>
                         {
                             this.state.courses.map(function(each) {
@@ -240,39 +257,25 @@ class CoursesAdd extends Component {
                         <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
                     </div>
                 </div>
-                <div className='col-sm-5'>
-                    <div className='card bg-light text-center'>
-                        <div className='card-body'>
-                            {this.state.show ? click : <button type="button" className="btn btn-dark w-50 mx-3" onClick={this.showForm}>Add Course</button>}
-                            {this.state.show ? <button type="submit" className="btn btn-dark mx-3 w-20 " onClick={this.onAdd}>Submit</button> : null}
-                            {this.state.show ? <button type="close" className="btn mx-3 w-20" onClick={this.closeForm}>Close</button> : null}
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        );
-        const defaultContent = (
-            <div>
-                {
-                    this.state.courses.map(function(each) {
-                        return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='student' />;
-                    })
-                }
-                <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+                {addCourse}
             </div>
         );
-        if (this.state.role == 'admin') {
-            content = adminContent;
-        } else {
-            content = defaultContent;
-        }
+
+        content = adminContent;
+
+        // const defaultContent = (
+        //     <div>
+        //         {
+        //             this.state.courses.map(function(each) {
+        //                 return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='student' />;
+        //             })
+        //         }
+        //         <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+        //     </div>
+        // );
 
         return (
             <div>{content}</div>
-
         );
     }
 }

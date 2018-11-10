@@ -8,10 +8,13 @@ class AssignmentCard extends Component {
         super(props);
         this.state = ({
             file: null,
-            showUpload: true
+            showUpload: true,
+            edit: false
         });
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.editCallback = this.editCallback.bind(this);
+        this.deleteCallback = this.deleteCallback.bind(this);
         this.fileInput = React.createRef();
     }
 
@@ -42,6 +45,7 @@ class AssignmentCard extends Component {
 
     onSubmit(event) {
         event.preventDefault();
+        console.log("sub:",this);
         let self = this;
         let userID = localStorage.getItem('user_id');
         let token = 'Bearer ' + localStorage.getItem('token');
@@ -69,6 +73,13 @@ class AssignmentCard extends Component {
             });
     }
 
+    editCallback() {
+        this.props.editAssign(this.props.assignmentID);
+    }
+    deleteCallback() {
+        this.props.deleteAssign(this.props.assignmentID);
+    }
+
     render() {
         const toUpload = (
             <div className="row">
@@ -92,7 +103,7 @@ class AssignmentCard extends Component {
             Due Date: {this.props.dueDate}<br />
             Maximum Marks: {this.props.maxMarks}<br />
             Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a><br /><br />
-                        <Link className='btn btn-dark mx-2' to={{
+                        {/* <Link className='btn btn-dark mx-2' to={{
                             pathname: '/assignments/' + this.props.assignmentID,
                             state: {
                                 uniqueID: this.props.uniqueID,
@@ -109,8 +120,11 @@ class AssignmentCard extends Component {
                             state: {
                                 assignmentID: this.props.assignmentID
                             }
-                        }}> View Submissions </Link>
+                        }}> View Submissions </Link> */}
 
+                        {/* <button type="button" className="btn btn-dark w-20 mx-3" onClick={console.log("aid:", this.props.assignmentID)}>Edit</button> */}
+                        <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
+                        <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.deleteCallback}>Delete</button>
                     </div>
                 </div>
                 <br />
@@ -133,10 +147,10 @@ class AssignmentCard extends Component {
             </div>
         );
 
-        if (this.props.role == 'prof') {
-            content = profContent;
-        } else {
+        if (this.props.role == 'student') {
             content = studContent;
+        } else {
+            content = profContent;
         }
 
         return (

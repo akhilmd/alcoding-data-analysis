@@ -6,11 +6,13 @@ class AssignmentAdd extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            role: '',
             name: '',
             uniqueID: '',
             type: '',
             details: '',
             maxMarks: undefined,
+            edit: undefined,
             resourcesUrl: '',
             startDate: '',
             endDate: '',
@@ -32,9 +34,32 @@ class AssignmentAdd extends Component {
     }
     componentDidMount() {
         let self = this;
+        let userID = localStorage.getItem('user_id');
         const {match: {params}} = this.props;
 
         let token = localStorage.getItem('token');
+
+        let apiPath = '/api/account/' + userID + '/details';
+        axios.get(apiPath, {
+            headers: {
+                'x-access-token': token
+            }
+        })
+            .then(function(response) {
+                if (!response.data.success) {
+                    // TODO: throw appropriate error and redirect
+                    console.log('Error1: ' + response.data);
+                    return;
+                }
+                let data = response.data;
+                self.setState({
+                    role: data.user.role
+                });
+            })
+            .catch(function(error) {
+                console.log('Error2: ', error);
+            });
+
         // /api/assignments/:courseID/assignments
         axios.get(`/api/assignments/${params.courseID}/assignments`, {
             headers: {
@@ -111,6 +136,7 @@ class AssignmentAdd extends Component {
             }
         };
         let data = Object.assign({}, self.state.assignment);
+        data.updateID = self.state.edit;
         data.name = self.state.name;
         data.uniqueId = self.state.uniqueID;
         data.type = self.state.type;
@@ -118,8 +144,7 @@ class AssignmentAdd extends Component {
         data.maxMarks = self.state.maxMarks;
         data.details = self.state.details;
         data.resourcesUrl = self.state.resourcesUrl;
-        let duration = {startDate: self.state.startDate, endDate: self.state.endDate};
-        data.duration = duration;
+        data.duration = {startDate: self.state.startDate, endDate: self.state.endDate};
         data = JSON.stringify(data);
         console.log(data);
         axios.post(`/api/assignments/${userID}/createAssignment`, data, config)
@@ -142,6 +167,55 @@ class AssignmentAdd extends Component {
             show: false
         });
     }
+    editAssignment(assignID) {
+        console.log("editing: ", assignID);
+        // console.log(typeof(this.state.assignments));
+        let assignToBeEdited = this.state.assignments.find(function(assign) {
+            return assign._id == assignID;
+        });
+        console.log(assignToBeEdited);
+        assignToBeEdited.duration = assignToBeEdited.duration || {startDate: "2000-01-01", endDate: "2000-01-01"};
+        this.setState({
+            edit: assignID,
+            show: true,
+            name: assignToBeEdited.name,
+            uniqueID: assignToBeEdited.uniqueID,
+            type: assignToBeEdited.type,
+            details: assignToBeEdited.details,
+            maxMarks: assignToBeEdited.maxMarks,
+            resourcesUrl: assignToBeEdited.resourcesUrl,
+            startDate: assignToBeEdited.duration.startDate.slice(0, 10),
+            endDate: assignToBeEdited.duration.endDate.slice(0, 10)
+        });
+    }
+    deleteAssignment(assignID) {
+        console.log("deleting: ", assignID);
+        let self = this;
+        let userID = localStorage.getItem('user_id');
+        let token = localStorage.getItem('token');
+        const {match: {params}} = this.props;
+
+        let config = {
+            headers: {
+                'x-access-token': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        let data = Object.assign({}, self.state.assignment);
+        data.assignID = assignID;
+        data.courseID = params.courseID;
+        data = JSON.stringify(data);
+
+        axios.post(`/api/assignments/${userID}/deleteAssignment`, data, config)
+            .then((res) => {
+                console.log(res.data);
+                this.reload();
+            })
+            .catch((err) => {
+                console.log(err);
+                alert('Assignment Failed to Upload!');
+            });
+    }
     render() {
         let content;
         const click = (
@@ -157,7 +231,8 @@ class AssignmentAdd extends Component {
                     </div>
                     <div className="form-group text-left">
                         <h6>Type</h6>
-                        <input type="text" className="form-control" placeholder="Type" value={this.state.type} onChange={this.handleTypeChange} />
+                        <label className="radio-inline"><input type="radio" value="file-upload" name="optradio" checked={this.state.type === 'file-upload'} onChange={this.handleTypeChange}></input>File Upload</label>
+                        <label className="radio-inline"><input type="radio" value="quiz" name="optradio" checked={this.state.type === 'quiz'} onChange={this.handleTypeChange}></input>Quiz</label>
                     </div>
                     <div className="form-group text-left">
                         <h6>Assignment Details</h6>
@@ -181,24 +256,40 @@ class AssignmentAdd extends Component {
                 </form>
             </div>
         );
+        let that = this;
         const AssignmentContent = (
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />;
+                        return <AssignmentCard deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />;
                     })
                 }
             </div>
         );
         content = AssignmentContent;
+
+        let addAssignmentContent = (<div></div>);
+
+        if (this.state.role == 'admin' || this.state.role == 'prof') {
+            addAssignmentContent = (
+                <div className='col-sm-5'>
+                    <div className='card text-center bg-light'>
+                        <div className='card-body '>
+                            {this.state.show ? click : <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.showForm}>Add Assignment</button>}
+                            {this.state.show ? null : <button className="btn w-20 mx-3"><Link className='text-dark' to="/courses"> Back To Courses </Link></button>}
+                            {this.state.show ? <button type="submit" className="btn btn-dark mx-3 w-20 " onClick={this.onAdd}>Submit</button> : null}
+                            {this.state.show ? <button type="close" className="btn w-20 mx-3" onClick={this.closeForm}>Close</button> : null}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div>
                 <div className='row'>
                     <div className='col'>
-
                         <div className="display-4 text-center">{this.props.location.state.code}: {this.props.location.state.name}</div>
-
-
                     </div>
                 </div>
                 <hr />
@@ -210,17 +301,7 @@ class AssignmentAdd extends Component {
                         <hr />
                         {content}
                     </div>
-                    <div className='col-sm-5'>
-                        <div className='card text-center bg-light'>
-                            <div className='card-body '>
-                                {this.state.show ? click : <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.showForm}>Add Assignment</button>}
-                                {this.state.show ? null : <button className="btn w-20 mx-3"><Link className='text-dark' to="/courses"> Back To Courses </Link></button>}
-                                {this.state.show ? <button type="submit" className="btn btn-dark mx-3 w-20 " onClick={this.onAdd}>Submit</button> : null}
-                                {this.state.show ? <button type="close" className="btn w-20 mx-3" onClick={this.closeForm}>Close</button> : null}
-                            </div>
-                        </div>
-                    </div>
-
+                    {addAssignmentContent}
                 </div>
             </div>
         );
