@@ -19,7 +19,8 @@ class CoursesAdd extends Component {
             hours: 0,
             isCore: '',
             courses: [],
-            show: false
+            show: false,
+            update:false
         };
         this.editCourse = this.editCourse.bind(this);
         this.deleteCourse = this.deleteCourse.bind(this);
@@ -196,6 +197,7 @@ class CoursesAdd extends Component {
         courseToBeEdited.duration = courseToBeEdited.duration || {startDate: "2000-01-01", endDate: "2000-01-01"};
         this.setState({
             edit: courseID,
+            update: true,
             show: true,
             name: courseToBeEdited.name,
             code: courseToBeEdited.code,
@@ -248,7 +250,7 @@ class CoursesAdd extends Component {
                     </div>
                     <div className="form-group text-left">
                         <h6>Code</h6>
-                        <input type="text" className="form-control" placeholder="Code" value={this.state.code} onChange={this.handleCodeChange} />
+                        {this.state.update ?<input type="text" className="form-control" placeholder="Code" value={this.state.code} readOnly/> : <input type="text" className="form-control" placeholder="Code" value={this.state.code} onChange={this.handleCodeChange} />}
                     </div>
                     <div className="form-group text-left">
                         <h6>Department</h6>

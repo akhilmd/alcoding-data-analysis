@@ -191,9 +191,33 @@ module.exports = (app) => {
                     });
                 }
                 if (previousCourse.length > 0) {
-                    return res.status(409).send({
-                        success: false,
-                        message: 'Error: Course already exists'
+                    let newValues= {
+                        name:req.body.name,
+                        department:req.body.department,
+                        description:req.body.description,
+                        resourcesUrl:req.body.resourcesUrl,
+                        duration:{
+                            startDate:req.body.duration.startDate,
+                            endDate:req.body.duration.endDate
+                        },
+                        details:{
+                            credits:req.body.details.credits,
+                            hours:req.body.details.hours
+                        }
+                    };
+
+                    Course.updateOne({code:req.body.code},newValues,function(err){
+                        if(err){
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: Server error while editing a course'
+                            });
+                        }
+                    });
+
+                    return res.status(200).send({
+                        success: true,
+                        message: 'Course updated successfully'
                     });
                 }
                 // save the course
