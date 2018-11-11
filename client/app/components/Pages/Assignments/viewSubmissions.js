@@ -21,6 +21,7 @@ class viewSubmissions extends Component {
             }
         })
             .then((res) => {
+                console.log(res);
                 this.setState({
                     submissions: res.data.data.assignment.submissions
                 });
@@ -29,18 +30,25 @@ class viewSubmissions extends Component {
     }
     // add usn
     render() {
-        let content;
-        const Content = (
+        let content = (
             <div>
-                {
-                    this.state.submissions.map(function(each) {
-                        return <SubmissionsCard key={each.user} fileID={each.file} user={each.user}/>;
-                    })
-                }
-                <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+                <h1>No submissions yet.</h1>
             </div>
         );
-        content = Content;
+
+        if (this.state.submissions.length) {
+            content = (
+                <div>
+                    {
+                        this.state.submissions.map(function(each) {
+                            return <SubmissionsCard key={each.user} fileID={each.file} user={each.user}/>;
+                        })
+                    }
+                    <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+                </div>
+            );
+        }
+        // content = Content;
         return (
             <div>
                 {content}

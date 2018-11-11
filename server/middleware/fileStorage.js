@@ -95,11 +95,14 @@ let downloadFile = function(dir) {
             let file = files[0];
             let filePath = path.join(dir, file.originalname);
             let fileName = file._id.toString()+'.'+file.originalname.split('.')[1];
-            fs.createReadStream(filePath).pipe(fs.createWriteStream(fileName));
-            fs.rename(fileName, path.join(path.join(homedir, 'Downloads'), fileName), function(err) {
-                if (err) throw err;
-                console.log('Successfully downloaded file '+file._id);
-            });
+
+            console.log(filePath, fileName);
+            res.download(filePath);
+            // fs.createReadStream(filePath).pipe(fs.createWriteStream(fileName));
+            // fs.rename(fileName, path.join(path.join(homedir, 'Downloads'), fileName), function(err) {
+            //     if (err) throw err;
+            //     console.log('Successfully downloaded file '+file._id);
+            // });
         });
     };
 };

@@ -9,22 +9,39 @@ class downloadFile extends Component {
         // api/assignments/:fileID/download
         const {match: {params}} = this.props;
 
-        // console.log(params.fileID)
         let token = localStorage.getItem('token');
-        axios.get(`/api/assignments/${params.fileID}/download`, {
+        // /api/file/:fileID/details
+        axios.get(`/api/file/${params.fileID}/details`, {
             headers: {
                 'x-access-token': token
             }
         })
-            .then((res) => console.log(res.data))
+            .then((res) => {
+                axios.get(`/api/assignments/${params.fileID}/download`, {
+                    responseType: "blob",
+                    headers: {
+                        'x-access-token': token
+                    }
+                })
+                    .then((response) => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', res.data.data.file.filename);
+                        document.body.appendChild(link);
+                        link.click();
+                        // window.close();
+                    })
+                    .catch((err) => console.log(err));
+            })
             .catch((err) => console.log(err));
 
-        window.close();
+        // console.log(params.fileID)
     }
     render() {
         return (
             <div>
-
+                <h1>Refresh page to try again.</h1>
             </div>
         );
     }

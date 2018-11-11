@@ -41,11 +41,11 @@ class AssignmentCard extends Component {
         this.setState({
             file: e.target.files[0]
         });
+        console.log(e.target.files);
     }
 
     onSubmit(event) {
         event.preventDefault();
-        console.log("sub:",this);
         let self = this;
         let userID = localStorage.getItem('user_id');
         let token = 'Bearer ' + localStorage.getItem('token');
@@ -59,7 +59,7 @@ class AssignmentCard extends Component {
             }
         };
 
-        let apiPath = 'api/assignments/' + userID + '/' + assignmentID + '/upload';
+        let apiPath = '/api/assignments/' + userID + '/' + assignmentID + '/upload';
         axios.post(apiPath, inputData, config)
             .then((res) => {
                 console.log(res.data);
@@ -122,9 +122,14 @@ class AssignmentCard extends Component {
                             }
                         }}> View Submissions </Link> */}
 
-                        {/* <button type="button" className="btn btn-dark w-20 mx-3" onClick={console.log("aid:", this.props.assignmentID)}>Edit</button> */}
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.deleteCallback}>Delete</button>
+                        <Link className='btn btn-dark w-20 mx-3' to={{
+                            pathname: '/assignments/submissions/' + this.props.uniqueID,
+                            state: {
+                                assignmentID: this.props.assignmentID
+                            }
+                        }}> Evaluate </Link>
                     </div>
                 </div>
                 <br />

@@ -6,7 +6,7 @@ const File = require('../../models/Files');
 let diskStorage = require('../../middleware/fileStorage').diskStorage;
 let fileUpload = require('../../middleware/fileStorage').fileUpload;
 let downloadFile = require('../../middleware/fileStorage').downloadFile;
-let dir = process.cwd() + '/../temp';
+let dir = process.cwd() + '/tmp';
 let keyName = 'inputFile';
 
 module.exports = (app) => {
@@ -459,6 +459,7 @@ module.exports = (app) => {
                         });
                     }
                     // Get Latest file submitted by user
+                    console.log(files);
                     req.fileID = files[files.length-1]._id;
                     let object = {'user': req.user_id, 'file': req.fileID};
                     submissions.push(object);
@@ -512,19 +513,47 @@ module.exports = (app) => {
                     });
                 }
                 let assignment = assignments[0];
-                if (assignment.submissions.length) {
-                    return res.status(200).send({
-                        success: true,
-                        message:
-                            'Assignment submissions successfully retrieved',
-                        data: {assignment}
-                    });
-                } else {
-                    return res.status(404).send({
+                // if (assignment.submissions.length) {
+                return res.status(200).send({
+                    success: true,
+                    message:
+                        'Assignment submissions successfully retrieved',
+                    data: {assignment}
+                });
+                // } else {
+                //     return res.status(404).send({
+                //         success: false,
+                //         message: 'Error: No submissions for this assignment'
+                //     });
+                // }
+            });
+        });
+
+    app.get('/api/file/:fileID/details',
+        requireRole('prof'),
+        function(req, res) {
+            File.find({
+                _id: req.params.fileID
+            }, function(err, files) {
+                if (err) {
+                    return res.status(500).send({
                         success: false,
-                        message: 'Error: No submissions for this assignment'
+                        message: 'Error: server error'
                     });
                 }
+                if (!files) {
+                    return res.status(404).send({
+                        success: false,
+                        message: 'Error: No such file found'
+                    });
+                }
+                let file = files[0];
+                return res.status(200).send({
+                    success: true,
+                    message:
+                        'File details successfully retrieved',
+                    data: {file}
+                });
             });
         });
 

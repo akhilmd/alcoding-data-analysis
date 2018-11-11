@@ -261,7 +261,7 @@ class AssignmentAdd extends Component {
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        return <AssignmentCard deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />;
+                        return <AssignmentCard deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role={that.state.role} />;
                     })
                 }
             </div>
