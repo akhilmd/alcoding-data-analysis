@@ -228,6 +228,79 @@ module.exports = (app) => {
             });
         });
 
+    app.post('/api/courses/:userID/deleteCourse',
+        requireRole('admin'),
+        function(req,res){
+            let courseID=req.body.courseID;
+            if (!req.params.userID) {
+                return res.status(400).send({
+                    success: false,
+                    message:
+                        'Error: userID not in parameters. Please try again.'
+                });
+            }
+
+            if (!req.body.courseID) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: courseID cannot be blank'
+                });
+            }
+
+            Course.find({
+                _id: courseID,
+                isDeleted: false
+                // professors: req.params.userID
+            }, function(err, courses) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: Server error'
+                    });
+                }
+                if (courses.length == 0) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: No courses found for this user.'
+                    });
+                }
+
+                Course.remove({_id: courseID},function(err){
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: server error: could not delete course from Courses'
+                        });
+                    }
+                });
+
+                Assignment.find({course:courseID},function(err,assignments){
+                     if (err) {
+                         return res.status(500).send({
+                             success: false,
+                             message: 'Error: Server error'
+                         });
+                     }
+                     if (assignments.length > 0) {
+                         Assignment.deleteMany({course:courseID},function(err){
+                            if(err){
+                                 return res.status(500).send({
+                                     success: false,
+                                    message: 'Error: server error: could not delete assignments from Assignments while deleting course'
+                                 });
+                            }
+                         });
+                     }
+                 });
+
+                return res.status(200).send({
+                    success: true,
+                    message:
+                        'Course ' + courseID + ' deleted'
+                });
+            });
+        });
+
     app.post('/api/assignments/:userID/deleteAssignment',
         requireRole('prof'),
         function(req, res) {

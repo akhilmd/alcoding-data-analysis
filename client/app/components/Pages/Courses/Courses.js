@@ -210,7 +210,31 @@ class CoursesAdd extends Component {
     }    
 
     deleteCourse(courseID){
-        this.reload();
+        console.log("Deleting: ", courseID);
+        let self = this;
+        let userID = localStorage.getItem('user_id');
+        let token = localStorage.getItem('token');
+        const {match: {params}} = this.props;
+
+        let config = {
+            headers: {
+                'x-access-token': token,
+                'Content-Type': 'application/json'
+            }
+        };
+        let data = Object.assign({}, self.state.course);
+        data.courseID = courseID;
+        data = JSON.stringify(data);
+        console.log(data);
+        axios.post(`/api/courses/${userID}/deleteCourse`, data, config)
+            .then((res) => {
+                console.log(res.data);
+                this.reload();
+            })
+            .catch((err) => {
+                console.log(err);
+                alert('Course Failed to be deleted!');
+            });
     }
 
     render() {
