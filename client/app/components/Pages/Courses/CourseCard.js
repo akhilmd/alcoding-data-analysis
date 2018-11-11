@@ -2,18 +2,46 @@
 
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import axios from 'axios';
 
 class CourseCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            courseID: ''
+            courseID: '',
+            profID: '',
+            profName: ''
         };
     }
     componentDidMount() {
+        let self = this;
+        let token = localStorage.getItem('token');
+        
         this.setState({
-            courseID: this.props.courseID
+            courseID: this.props.courseID,
+            profName: ''
         });
+
+        let apiPath = "/api/account/" + this.props.profID + "/details";
+        console.log(apiPath);
+        axios.get(apiPath, {
+            headers: {
+                'x-access-token': token
+            }
+        }).then(function(response) {
+                if (!response.data.success) {
+                    // TODO: throw appropriate error and redirect
+                    console.log('Error: ' + response.data);
+                    return;
+                }
+
+                self.setState({
+                    profName: response.data.user.name.firstName + " " + response.data.user.name.lastName
+                });
+            })
+            .catch(function(error) {
+                console.log('Error2: ', error);
+            });
     }
 
 
@@ -24,8 +52,10 @@ class CourseCard extends Component {
                 <div className="card bg-light mx-auto">
                     <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
                     <div className="card-body text-left">
-            Description: {this.props.description}<br />
-            Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
+                        Instructor: {this.state.profName}<br />
+                        Credits: {this.props.credits}<br />
+                        Description: {this.props.description}<br />
+                        Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
                     </div>
                     <div className="card-footer">
                         <Link className='btn btn-dark mx-2' to={{
@@ -45,8 +75,9 @@ class CourseCard extends Component {
                 <div className="card bg-light mx-auto">
                     <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
                     <div className="card-body text-left">
-            Description: {this.props.description}<br />
-            Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
+                        Instructor: {this.state.profName}<br />
+                        Description: {this.props.description}<br />
+                        Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
                     </div>
                 </div>
                 <br />

@@ -253,7 +253,6 @@ class CoursesAdd extends Component {
             <div className='row'>
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
                 {addCourse}
-                
                 <div className='col-sm-7'>
                     <h1>Active Courses</h1>
                     <div>
@@ -261,7 +260,18 @@ class CoursesAdd extends Component {
                             this.state.courses.map(function(each) {
                                 if(each.duration != undefined){
                                     if(new Date(each.duration.endDate) > new Date()){
-                                        return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='prof' />;
+                                        return <CourseCard 
+                                        key={each.code} 
+                                        code={each.code} 
+                                        name={each.name} 
+                                        department={each.department} 
+                                        description={each.description} 
+                                        credits={each.credits} 
+                                        resourceUrl={each.resourcesUrl} 
+                                        courseID={each._id} 
+                                        profID={each.professors[0]}
+                                        credits={each.details.credits}
+                                        role='prof' />;
                                     }
                                 }
                             })
@@ -275,7 +285,18 @@ class CoursesAdd extends Component {
                             this.state.courses.map(function(each) {
                                 if(each.duration != undefined) {
                                     if(new Date(each.duration.endDate) < new Date()){
-                                        return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='prof' />;
+                                        return <CourseCard 
+                                        key={each.code} 
+                                        code={each.code} 
+                                        name={each.name} 
+                                        department={each.department} 
+                                        description={each.description} 
+                                        credits={each.credits} 
+                                        resourceUrl={each.resourcesUrl} 
+                                        courseID={each._id} 
+                                        profID={each.professors[0]}
+                                        credits={each.details.credits}
+                                        role='prof' />;
                                     }
                                 }
                             })
