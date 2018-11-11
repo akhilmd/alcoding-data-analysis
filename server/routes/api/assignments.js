@@ -40,7 +40,7 @@ module.exports = (app) => {
 
             return res.status(200).send({
                 success: true,
-                message: 'Course Details successfully retrieved.',
+                message: 'Details successfully retrieved.',
                 courses: {courses}
             });
         });
@@ -255,8 +255,8 @@ module.exports = (app) => {
 
             Course.find({
                 _id: req.body.courseID,
-                isDeleted: false,
-                professors: req.params.userID
+                isDeleted: false
+                // professors: req.params.userID
             }, function(err, courses) {
                 if (err) {
                     return res.status(500).send({
@@ -335,8 +335,8 @@ module.exports = (app) => {
 
             Course.find({
                 _id: req.body.courseID,
-                isDeleted: false,
-                professors: req.params.userID
+                isDeleted: false
+                // professors: req.params.userID
             }, function(err, courses) {
                 if (err) {
                     return res.status(500).send({
