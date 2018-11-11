@@ -20,7 +20,7 @@ class CoursesAdd extends Component {
             isCore: '',
             courses: [],
             show: false,
-            update:false
+            update: false
         };
         this.editCourse = this.editCourse.bind(this);
         this.deleteCourse = this.deleteCourse.bind(this);
@@ -165,7 +165,7 @@ class CoursesAdd extends Component {
         data.duration = {};
         data.duration.startDate = self.state.startDate;
         data.duration.endDate = self.state.endDate;
- 
+
         data = JSON.stringify(data);
         console.log(data);
         axios.post(apiPath, data, config)
@@ -190,7 +190,7 @@ class CoursesAdd extends Component {
     }
 
     editCourse(courseID) {
-        console.log("editing: ", courseID);
+        console.log('editing: ' + courseID);
         let courseToBeEdited = this.state.courses.find(function(assign) {
             return assign._id == courseID;
         });
@@ -209,15 +209,14 @@ class CoursesAdd extends Component {
             endDate: courseToBeEdited.duration.endDate.slice(0, 10),
             hours: courseToBeEdited.details.hours
         });
-    }    
+    }
 
-    deleteCourse(courseID){
-        console.log("Deleting: ", courseID);
+    deleteCourse(courseID) {
+        console.log('Deleting: ' + courseID);
         let self = this;
         let userID = localStorage.getItem('user_id');
         let token = localStorage.getItem('token');
-        const {match: {params}} = this.props;
-
+        
         let config = {
             headers: {
                 'x-access-token': token,
@@ -312,7 +311,7 @@ class CoursesAdd extends Component {
                         {
                             this.state.courses.map(function(each) {
                                 if(each.duration != undefined){
-                                    if(new Date(each.duration.endDate) > new Date()){
+                                    if(new Date(each.duration.endDate) > new Date()) {
                                         return <CourseCard 
                                         key={each.code} 
                                         code={each.code} 

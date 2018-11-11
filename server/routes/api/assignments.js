@@ -192,22 +192,22 @@ module.exports = (app) => {
                 }
                 if (previousCourse.length > 0) {
                     let newValues= {
-                        name:req.body.name,
-                        department:req.body.department,
-                        description:req.body.description,
-                        resourcesUrl:req.body.resourcesUrl,
-                        duration:{
-                            startDate:req.body.duration.startDate,
-                            endDate:req.body.duration.endDate
+                        name: req.body.name,
+                        department: req.body.department,
+                        description: req.body.description,
+                        resourcesUrl: req.body.resourcesUrl,
+                        duration: {
+                            startDate: req.body.duration.startDate,
+                            endDate: req.body.duration.endDate
                         },
-                        details:{
-                            credits:req.body.details.credits,
-                            hours:req.body.details.hours
+                        details: {
+                            credits: req.body.details.credits,
+                            hours: req.body.details.hours
                         }
                     };
 
-                    Course.updateOne({code:req.body.code},newValues,function(err){
-                        if(err){
+                    Course.updateOne({code: req.body.code}, newValues, function(err) {
+                        if (err) {
                             return res.status(500).send({
                                 success: false,
                                 message: 'Error: Server error while editing a course'
@@ -254,7 +254,7 @@ module.exports = (app) => {
 
     app.post('/api/courses/:userID/deleteCourse',
         requireRole('admin'),
-        function(req,res){
+        function(req, res) {
             let courseID=req.body.courseID;
             if (!req.params.userID) {
                 return res.status(400).send({
@@ -289,7 +289,7 @@ module.exports = (app) => {
                     });
                 }
 
-                Course.remove({_id: courseID},function(err){
+                Course.remove({_id: courseID}, function(err) {
                     if (err) {
                         return res.status(500).send({
                             success: false,
@@ -298,24 +298,24 @@ module.exports = (app) => {
                     }
                 });
 
-                Assignment.find({course:courseID},function(err,assignments){
-                     if (err) {
-                         return res.status(500).send({
-                             success: false,
-                             message: 'Error: Server error'
-                         });
-                     }
-                     if (assignments.length > 0) {
-                         Assignment.deleteMany({course:courseID},function(err){
-                            if(err){
-                                 return res.status(500).send({
-                                     success: false,
+                Assignment.find({course: courseID}, function(err, assignments) {
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: Server error'
+                        });
+                    }
+                    if (assignments.length > 0) {
+                        Assignment.deleteMany({course: courseID}, function(err) {
+                            if (err) {
+                                return res.status(500).send({
+                                    success: false,
                                     message: 'Error: server error: could not delete assignments from Assignments while deleting course'
-                                 });
+                                });
                             }
-                         });
-                     }
-                 });
+                        });
+                    }
+                });
 
                 return res.status(200).send({
                     success: true,

@@ -18,39 +18,39 @@ class CourseCard extends Component {
     componentDidMount() {
         let self = this;
         let token = localStorage.getItem('token');
-        
+
         this.setState({
             courseID: this.props.courseID,
             profName: ''
         });
 
-        let apiPath = "/api/account/" + this.props.profID + "/details";
+        let apiPath = '/api/account/' + this.props.profID + '/details';
         console.log(apiPath);
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token
             }
         }).then(function(response) {
-                if (!response.data.success) {
-                    // TODO: throw appropriate error and redirect
-                    console.log('Error: ' + response.data);
-                    return;
-                }
+            if (!response.data.success) {
+                // TODO: throw appropriate error and redirect
+                console.log('Error: ' + response.data);
+                return;
+            }
 
-                self.setState({
-                    profName: response.data.user.name.firstName + " " + response.data.user.name.lastName
-                });
-            })
+            self.setState({
+                profName: response.data.user.name.firstName + ' ' + response.data.user.name.lastName
+            });
+        })
             .catch(function(error) {
                 console.log('Error2: ', error);
             });
     }
 
-    editCallback(){
+    editCallback() {
         this.props.editCourse(this.props.courseID);
     }
 
-    deleteCallback(){
+    deleteCallback() {
         this.props.deleteCourse(this.props.courseID);
     }
 
@@ -76,7 +76,7 @@ class CourseCard extends Component {
                         }}> View Course </Link>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.deleteCallback}>Delete</button>
-                        
+    
                     </div>
                 </div>
                 <br />
@@ -100,7 +100,7 @@ class CourseCard extends Component {
                                 name: this.props.name
                             }
                         }}> View Course </Link>
-                        
+
                     </div>
                 </div>
                 <br />
