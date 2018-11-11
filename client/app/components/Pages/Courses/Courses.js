@@ -21,6 +21,8 @@ class CoursesAdd extends Component {
             courses: [],
             show: false
         };
+        this.editCourse = this.editCourse.bind(this);
+        this.deleteCourse = this.deleteCourse.bind(this);
         this.onAdd = this.onAdd.bind(this);
         this.showForm = this.showForm.bind(this);
         this.closeForm = this.closeForm.bind(this);
@@ -186,6 +188,30 @@ class CoursesAdd extends Component {
         });
     }
 
+    editCourse(courseID) {
+        console.log("editing: ", courseID);
+        let courseToBeEdited = this.state.courses.find(function(assign) {
+            return assign._id == courseID;
+        });
+        courseToBeEdited.duration = courseToBeEdited.duration || {startDate: "2000-01-01", endDate: "2000-01-01"};
+        this.setState({
+            edit: courseID,
+            show: true,
+            name: courseToBeEdited.name,
+            code: courseToBeEdited.code,
+            department: courseToBeEdited.department,
+            description: courseToBeEdited.description,
+            credits: courseToBeEdited.details.credits,
+            resourcesUrl: courseToBeEdited.resourcesUrl,
+            startDate: courseToBeEdited.duration.startDate.slice(0, 10),
+            endDate: courseToBeEdited.duration.endDate.slice(0, 10),
+            hours: courseToBeEdited.details.hours
+        });
+    }    
+
+    deleteCourse(courseID){
+        this.reload();
+    }
 
     render() {
         let content;
@@ -249,6 +275,7 @@ class CoursesAdd extends Component {
             );
         }
 
+        let that=this;
         const adminContent = (
             <div className='row'>
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
@@ -269,9 +296,11 @@ class CoursesAdd extends Component {
                                         credits={each.credits} 
                                         resourceUrl={each.resourcesUrl} 
                                         courseID={each._id} 
+                                        editCourse={that.editCourse.bind(that)}
+                                        deleteCourse={that.deleteCourse.bind(that)}
                                         profID={each.professors[0]}
                                         credits={each.details.credits}
-                                        role='prof' />;
+                                        role={that.state.role} />;
                                     }
                                 }
                             })
@@ -294,9 +323,11 @@ class CoursesAdd extends Component {
                                         credits={each.credits} 
                                         resourceUrl={each.resourcesUrl} 
                                         courseID={each._id} 
+                                        editCourse={that.editCourse.bind(that)}
+                                        deleteCourse={that.deleteCourse.bind(that)}
                                         profID={each.professors[0]}
                                         credits={each.details.credits}
-                                        role='prof' />;
+                                        role={that.state.role} />;
                                     }
                                 }
                             })
