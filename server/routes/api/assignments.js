@@ -23,7 +23,6 @@ module.exports = (app) => {
         // Let all courses be visible to everyone
         // if (req.role == 'student') search.students = req.user_id;
         // else if (req.role == 'prof') search.professors = req.user_id;
-
         Course.find(search, (err, courses) => {
             if (err) {
                 return res.status(500).send({
@@ -205,10 +204,10 @@ module.exports = (app) => {
                 newCourse.department = req.body.department;
                 newCourse.description = req.body.description;
                 newCourse.resourcesUrl = req.body.resourcesUrl;
-                newCourse.duration.startDate = req.body.startDate;
-                newCourse.duration.endDate = req.body.endDate;
-                newCourse.details.credits = req.body.credits;
-                newCourse.details.hours = req.body.hours;
+                newCourse.duration.startDate = req.body.duration.startDate;
+                newCourse.duration.endDate = req.body.duration.endDate;
+                newCourse.details.credits = req.body.details.credits;
+                newCourse.details.hours = req.body.details.hours;
                 // This may cause profs to not be able to see courses
                 newCourse.professors.push(req.params.userID);
                 // console.log(newCourse)
