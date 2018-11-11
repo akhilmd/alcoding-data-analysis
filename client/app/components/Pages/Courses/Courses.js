@@ -13,10 +13,10 @@ class CoursesAdd extends Component {
             department: '',
             description: '',
             resourcesUrl: '',
-            startDate: '',
-            endDate: '',
-            credits: '',
-            hours: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            credits: 0,
+            hours: 0,
             isCore: '',
             courses: [],
             show: false
@@ -155,10 +155,14 @@ class CoursesAdd extends Component {
         data.department = self.state.department;
         data.description = self.state.description;
         data.resourcesUrl = self.state.resourcesUrl;
-        let details = {credits: self.state.credits, hours: self.state.hours, isCore: self.state.isCore};
-        data.details = details;
-        let duration = {startDate: self.state.startDate, endDate: self.state.endDate};
-        data.duration = duration;
+        data.details = {};
+        data.details.credits = self.state.credits;
+        data.details.hours = self.state.hours;
+        data.details.isCore = self.state.isCore;
+        data.duration = {};
+        data.duration.startDate = self.state.startDate;
+        data.duration.endDate = self.state.endDate;
+ 
         data = JSON.stringify(data);
         console.log(data);
         axios.post(apiPath, data, config)
@@ -247,32 +251,42 @@ class CoursesAdd extends Component {
 
         const adminContent = (
             <div className='row'>
+                <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+                {addCourse}
+                
                 <div className='col-sm-7'>
+                    <h1>Active Courses</h1>
                     <div>
                         {
                             this.state.courses.map(function(each) {
-                                return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='prof' />;
+                                if(each.duration != undefined){
+                                    if(new Date(each.duration.endDate) > new Date()){
+                                        return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='prof' />;
+                                    }
+                                }
                             })
                         }
-                        <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
                     </div>
                 </div>
-                {addCourse}
+                <div className='col-sm-7'>
+                    <h1>Past Courses</h1>
+                    <div>
+                        {
+                            this.state.courses.map(function(each) {
+                                if(each.duration != undefined) {
+                                    if(new Date(each.duration.endDate) < new Date()){
+                                        return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='prof' />;
+                                    }
+                                }
+                            })
+                        }
+                    </div>
+                </div>
+                
             </div>
         );
 
         content = adminContent;
-
-        // const defaultContent = (
-        //     <div>
-        //         {
-        //             this.state.courses.map(function(each) {
-        //                 return <CourseCard key={each.code} code={each.code} name={each.name} department={each.department} description={each.description} credits={each.credits} resourceUrl={each.resourceUrl} courseID={each._id} role='student' />;
-        //             })
-        //         }
-        //         <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
-        //     </div>
-        // );
 
         return (
             <div>{content}</div>
