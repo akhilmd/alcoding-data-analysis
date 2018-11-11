@@ -288,7 +288,7 @@ module.exports = (app) => {
             // Return a response with user data
             return res.status(200).send({
                 success: true,
-                message: 'Details successfully retrieved',
+                message: 'User Details successfully retrieved',
                 user: user
             });
         });
