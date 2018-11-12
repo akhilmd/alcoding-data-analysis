@@ -20,11 +20,16 @@ class CoursesAdd extends Component {
             isCore: '',
             courses: [],
             show: false,
-            update: false
+            update: false,
+            file: null,
+            showUpload: true,
+
         };
+        this.onSubmit = this.onSubmit.bind(this);
         this.editCourse = this.editCourse.bind(this);
         this.deleteCourse = this.deleteCourse.bind(this);
         this.onAdd = this.onAdd.bind(this);
+        this.onChange=this.onChange.bind(this);
         this.showForm = this.showForm.bind(this);
         this.closeForm = this.closeForm.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -135,6 +140,11 @@ class CoursesAdd extends Component {
             hours: e.target.value
         });
     }
+    onChange(e){
+        this.setState({
+            file: e.target.files[0]
+        });
+    }
     reload() {
         window.location.reload();
     }
@@ -238,6 +248,38 @@ class CoursesAdd extends Component {
             });
     }
 
+    onSubmit() {
+        event.preventDefault();
+        let self = this;
+        let userID = localStorage.getItem('user_id');
+        let token = 'Bearer ' + localStorage.getItem('token');
+        let inputData = new FormData();
+        inputData.append('inputFile', this.state.file);
+        let config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': token
+            }
+        };
+        let apiPath = '/api/courses/' + userID + '/createMany';
+        axios.post(apiPath, inputData, config)
+            .then((res) => {
+                console.log(res.data);
+                if (res.data.success) {
+                    self.setState({
+                        showUpload: false
+                    });
+                } else {
+                    alert('File failed to upload!');
+                    }
+                    this.reload();
+                })
+            .catch((err) => {
+                console.log(err);
+                alert('courses failed to be uploaded');
+            });
+    }
+
     render() {
         let content;
         const click = (
@@ -296,8 +338,17 @@ class CoursesAdd extends Component {
                             {this.state.show ? <button type="close" className="btn mx-3 w-20" onClick={this.closeForm}>Close</button> : null}
                         </div>
                     </div>
+                    <div className="row">
+                        <div className="custom-file col-sm">
+                            <input type="file" className="custom-file-input" id="validatedCustomFile" onChange={this.onChange}/>
+                            <label className="custom-file-label" htmlFor="validatedCustomFile">Choose file</label>
+                        </div>
+                        <div className="col-sm">
+                            <button className="btn btn-dark" onClick={this.onSubmit}> Submit </button>
+                        </div>
+                    </div>
                 </div>
-            );
+                );
         }
 
         let that=this;
