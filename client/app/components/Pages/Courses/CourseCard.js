@@ -106,25 +106,23 @@ class CourseCard extends Component {
                 <br />
             </div>
         );
-        const studContent = (
-            <div id="CourseCard">
-                <div className="card bg-light mx-auto">
-                    <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
-                    <div className="card-body text-left">
-                        Instructor: {this.state.profName}<br />
-                        Description: {this.props.description}<br />
-                        Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
-                    </div>
-                </div>
-                <br />
-            </div>
-        );
+        // const studContent = (
+        //     <div id="CourseCard">
+        //         <div className="card bg-light mx-auto">
+        //             <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
+        //             <div className="card-body text-left">
+        //                 Instructor: {this.state.profName}<br />
+        //                 Description: {this.props.description}<br />
+        //                 Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
+        //             </div>
+        //         </div>
+        //         <br />
+        //     </div>
+        // );
         if (this.props.role == 'admin') {
             content = adminContent;
-        } else if (this.props.role == 'prof') {
-            content = profContent;
         } else {
-            content = studContent;
+            content = profContent;
         }
         return (
             <div>{content}</div>
