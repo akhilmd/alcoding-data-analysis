@@ -23,7 +23,6 @@ class CoursesAdd extends Component {
             update: false,
             file: null,
             showUpload: true,
-
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.editCourse = this.editCourse.bind(this);

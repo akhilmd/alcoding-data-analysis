@@ -8,11 +8,10 @@ let diskStorage = require('../../middleware/fileStorage').diskStorage;
 let fileUpload = require('../../middleware/fileStorage').fileUpload;
 let downloadFile = require('../../middleware/fileStorage').downloadFile;
 let dir = process.cwd() + '/tmp';
-let path = require('path');
 let fs = require('fs');
 let keyName = 'inputFile';
 let multer = require('multer');
-let upload = multer({ dest: dir })
+let upload = multer({dest: dir});
 
 module.exports = (app) => {
     app.get('/api/assignments/:userID/courses', verifyUser, function(req, res) {
@@ -333,45 +332,45 @@ module.exports = (app) => {
     app.post('/api/courses/:userID/createMany',
         verifyUser,
         upload.single(keyName),
-        function(req,res){
+        function(req, res) {
             let json = csvToJson.fieldDelimiter(',').getJsonFromCsv(req.file.path);
             let obj=null;
             let courseExists=false;
-            for(let i=0; i<json.length;i++){
+            for (let i=0; i<json.length; i++) {
                 obj=json[i];
-                if(!obj.code){
-                    console.log("Missing course code");
+                if (!obj.code) {
+                    console.log('Missing course code');
                     continue;
                 }
-                Course.find({code: obj.code},function (err,course){
-                    if(err) {
+                Course.find({code: obj.code}, function(err, course) {
+                    if (err) {
                         return res.status(500).send({
                             success: false,
                             message: 'Error: server error'
                         });
                     }
-                    if(course.length!=0) {
-                        console.log("Course "+obj.code+" already exists");
+                    if (course.length!=0) {
+                        console.log('Course '+obj.code+' already exists');
                         courseExists = true;
                     }
                 });
-                if(courseExists){
+                if (courseExists) {
                     continue;
                 }
-                if(!obj.name || !obj.startDate || !obj.endDate || !obj.credits || !obj.hours || !obj.department || !obj.resourcesUrl || !obj.description){
-                    console.log("Missing details for " +obj.code);
+                if (!obj.name || !obj.startDate || !obj.endDate || !obj.credits || !obj.hours || !obj.department || !obj.resourcesUrl || !obj.description) {
+                    console.log('Missing details for ' +obj.code);
                     continue;
                 }
                 let startDate = obj.startDate.split('-').map(val => Number(val));
                 let endDate = obj.endDate.split('-').map(val => Number(val));
-                startDate[1]=startDate[1]-1;
-                endDate[1]=endDate[1]-1;
-                if(startDate.length!=3 || startDate[0].toString().length!=4 || startDate[1].toString().length>2 || startDate[2].toString().length>2){
-                    console.log("Invalid format of startDate for "+obj.code);
+                startDate[1] = startDate[1]-1;
+                endDate[1] = endDate[1]-1;
+                if (startDate.length!=3 || startDate[0].toString().length!=4 || startDate[1].toString().length>2 || startDate[2].toString().length>2) {
+                    console.log('Invalid format of startDate for '+obj.code);
                     continue;
                 }
-                if(endDate.length!=3 || endDate[0].toString().length!=4 || endDate[1].toString().length>2 || endDate[2].toString().length>2){
-                    console.log("Invalid format of endDate for "+obj.code);
+                if (endDate.length!=3 || endDate[0].toString().length!=4 || endDate[1].toString().length>2 || endDate[2].toString().length>2) {
+                    console.log('Invalid format of endDate for '+obj.code);
                     continue;
                 }
                 const newCourse = new Course();
@@ -381,12 +380,12 @@ module.exports = (app) => {
                 newCourse.department = obj.department;
                 newCourse.description = obj.description;
                 newCourse.resourcesUrl = obj.resourcesUrl;
-                newCourse.duration.startDate = new Date(startDate[0],startDate[1],startDate[2]);
-                newCourse.duration.endDate = new Date(endDate[0],endDate[1],endDate[2]);
+                newCourse.duration.startDate = new Date(startDate[0], startDate[1], startDate[2]);
+                newCourse.duration.endDate = new Date(endDate[0], endDate[1], endDate[2]);
                 newCourse.details.credits = obj.credits;
                 newCourse.details.hours = obj.hours;
                 newCourse.professors.push(req.params.userID);
- 
+
                 newCourse.save((err) => {
                     if (err) {
                         return res.status(500).send({
@@ -395,7 +394,7 @@ module.exports = (app) => {
                         });
                     }
                 });
-                console.log(obj.name+" successfully created");
+                console.log(obj.name+' successfully created');
             }
             fs.unlinkSync(req.file.path);
             return res.status(200).send({
