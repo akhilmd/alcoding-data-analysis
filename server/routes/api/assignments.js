@@ -516,6 +516,54 @@ module.exports = (app) => {
             });
         });
 
+    app.post('/api/assignments/:assignmentID/:userID/setMarks',
+        requireRole('prof'),
+        function(req, res) {
+            if (!req.params.userID) {
+                return res.status(400).send({
+                    success: false,
+                    message:
+                        'Error: userID not in parameters. Please try again.'
+                });
+            }
+
+            if (!req.params.assignmentID) {
+                return res.status(400).send({
+                    success: false,
+                    message:
+                        'Error: assignmentID not in parameters. Please try again.'
+                });
+            }
+
+            if (!req.body.marks) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Error: marks cannot be blank.'
+                });
+            }
+
+            console.log("XOXOXO", req.params.assignmentID, req.params.userID, req.body.marks);
+
+            Assignment.update({_id: req.params.assignmentID, "submissions.user": req.params.userID}, {
+                "$set": {
+                    "submissions.$.marksObtained": req.body.marks
+                }
+            }, function(err) {
+                if (err) {
+                    return res.status(500).send({
+                        success: false,
+                        message: 'Error: server error'
+                    });
+                }
+
+                console.log("succ");
+                return res.status(200).send({
+                    success: true,
+                    message: "marks given"
+                });
+            });
+        });
+
     app.all('/api/assignments/:userID/:assignmentID/upload',
         verifyUser,
         diskStorage(dir).single(keyName),
@@ -537,7 +585,7 @@ module.exports = (app) => {
                         message: 'Error: server error'
                     });
                 }
-                let submissions = [];
+                letsubmissions = [];
                 for (let i=0; i<assignment.submissions.length; i++) {
                     let submission = assignment.submissions[i];
                     if (submission.user!=req.params.userID) {

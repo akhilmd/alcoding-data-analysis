@@ -9,7 +9,8 @@ class AssignmentCard extends Component {
         this.state = ({
             file: null,
             showUpload: true,
-            edit: false
+            edit: false,
+            marks: -1
         });
         this.onSubmit = this.onSubmit.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -21,12 +22,14 @@ class AssignmentCard extends Component {
     componentDidMount() {
         let userID = localStorage.getItem('user_id');
         // let success=0;
+        console.log(this.props.submissions);
         if (this.props.submissions.length) {
             for (let i=0; i<this.props.submissions.length; i++) {
                 let submission = this.props.submissions[i];
                 if (submission.user==userID) {
                     this.setState({
-                        showUpload: false
+                        showUpload: false,
+                        marks: submission.marksObtained
                     });
                 }
             }
@@ -144,6 +147,7 @@ class AssignmentCard extends Component {
             Type: {this.props.type}<br />
             Due Date: {this.props.dueDate}<br />
             Maximum Marks: {this.props.maxMarks}<br />
+            Marks Obtained: {this.state.marks==-1?"Not Evaluated":this.state.marks}<br />
             Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a><br /><br />
                         {this.state.showUpload ? toUpload : <h6 className="text-info">Assignment Submitted!</h6>}
                     </div>
