@@ -14,6 +14,8 @@ class CourseCard extends Component {
         };
         this.editCallback=this.editCallback.bind(this);
         this.deleteCallback=this.deleteCallback.bind(this);
+        this.onSubmitBulkFile=this.onSubmitBulkFile.bind(this);
+        this.onChange=this.onChange.bind(this);
     }
     componentDidMount() {
         let self = this;
@@ -54,6 +56,44 @@ class CourseCard extends Component {
         this.props.deleteCourse(this.props.courseID);
     }
 
+    onSubmitBulkFile() {
+        event.preventDefault();
+        let self = this;
+        let userID = localStorage.getItem('user_id');
+        let token = 'Bearer ' + localStorage.getItem('token');
+        let inputData = new FormData();
+        inputData.append('inputFile', this.state.file);
+        let config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'Authorization': token
+            }
+        };
+        let apiPath = '/api/courses/' + this.props.courseID + '/bulkAddStudents';
+        axios.post(apiPath, inputData, config)
+            .then((res) => {
+                console.log(res.data);
+                if (res.data.success) {
+                    self.setState({
+                        showUpload: false
+                    });
+                } else {
+                    alert('File failed to upload!');
+                }
+                window.location.reload();
+            })
+            .catch((err) => {
+                console.log(err);
+                alert('sstudents failed to be uploaded');
+            });
+    }
+
+    onChange(e) {
+        this.setState({
+            file: e.target.files[0]
+        });
+    }
+
     render() {
         let content;
         const adminContent = (
@@ -76,7 +116,17 @@ class CourseCard extends Component {
                         }}> View Course </Link>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.deleteCallback}>Delete</button>
-    
+                        <br/>
+                        <br/>
+                        <div className="row" style={{paddingLeft: "22px"}}>
+                            <div className="custom-file col-sm">
+                                <input type="file" className="custom-file-input" id="validatedCustomFile" onChange={this.onChange}/>
+                                <label className="custom-file-label" htmlFor="validatedCustomFile">Choose file</label>
+                            </div>
+                            <div className="col-sm">
+                                <button className="btn btn-dark" onClick={this.onSubmitBulkFile}> Submit </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <br />

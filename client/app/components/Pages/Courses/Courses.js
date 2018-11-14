@@ -350,7 +350,7 @@ class CoursesAdd extends Component {
                         </div>
                     </div>
                 </div>
-                );
+            );
         }
 
         let that=this;

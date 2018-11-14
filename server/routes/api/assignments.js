@@ -1,4 +1,5 @@
 let Course = require('../../models/assignments/Course');
+let User = require('../../models/User');
 let Assignment = require('../../models/assignments/Assignment');
 let requireRole = require('../../middleware/Token').requireRole;
 let csvToJson = require('convert-csv-to-json');
@@ -404,6 +405,49 @@ module.exports = (app) => {
             });
         });
 
+    app.post('/api/courses/:courseID/bulkAddStudents',
+        verifyUser,
+        upload.single(keyName),
+        function(req, res) {
+            let json = csvToJson.fieldDelimiter(',').getJsonFromCsv(req.file.path);
+            let obj=null;
+            let userIds = [];
+            let usns = [];
+
+            for (let i = 0; i < json.length; i++) {
+                obj=json[i];
+                if (!obj.usn) {
+                    console.log('Missing USN');
+                    continue;
+                }
+                usns.push(obj.usn.toUpperCase().trim());
+            }
+
+            User.find({usn: {$in: usns}}, function(err, users) {
+                console.log(users);
+
+                userIds = users.map(function(user) {
+                    return user._id;
+                });
+
+                console.log(userIds);
+                Course.update({_id: req.params.courseID}, {students: userIds}, function(err, course) {
+                    if (err) {
+                        return res.status(500).send({
+                            success: false,
+                            message: 'Error: server error'
+                        });
+                    }
+
+                    fs.unlinkSync(req.file.path);
+                    return res.status(200).send({
+                        success: true,
+                        message: 'Courses added'
+                    });
+                });
+            });
+        });
+
     app.post('/api/assignments/:userID/deleteAssignment',
         requireRole('prof'),
         function(req, res) {
@@ -620,8 +664,6 @@ module.exports = (app) => {
                     message: 'Error: marks cannot be blank.'
                 });
             }
-
-            console.log("XOXOXO", req.params.assignmentID, req.params.userID, req.body.marks);
 
             Assignment.update({_id: req.params.assignmentID, "submissions.user": req.params.userID}, {
                 "$set": {
