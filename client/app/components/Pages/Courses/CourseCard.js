@@ -10,7 +10,17 @@ class CourseCard extends Component {
         this.state = {
             courseID: '',
             profID: '',
-            profName: ''
+            profName: '',
+            department: '',
+            semester: 0,
+            description: '',
+            resourceUrl: '',
+            credits: 0,
+            hours: 0,
+            t1: 0,
+            t2: 0,
+            assignment: 0,
+            esa: 0
         };
         this.editCallback=this.editCallback.bind(this);
         this.deleteCallback=this.deleteCallback.bind(this);
@@ -27,7 +37,6 @@ class CourseCard extends Component {
         });
 
         let apiPath = '/api/account/' + this.props.profID + '/details';
-        console.log(apiPath);
         axios.get(apiPath, {
             headers: {
                 'x-access-token': token
@@ -111,7 +120,17 @@ class CourseCard extends Component {
                             pathname: '/courses/' + this.props.courseID,
                             state: {
                                 code: this.props.code,
-                                name: this.props.name
+                                name: this.props.name,
+                                department: this.props.department,
+                                description: this.props.description,
+                                semester: this.props.semester,
+                                resourceUrl: this.props.resourceUrl,
+                                credits: this.props.credits,
+                                hours: this.props.hours,
+                                t1: this.props.t1,
+                                t2: this.props.t2,
+                                assignment: this.props.assignment,
+                                esa: this.props.esa
                             }
                         }}> View Course </Link>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
@@ -147,7 +166,17 @@ class CourseCard extends Component {
                             pathname: '/courses/' + this.props.courseID,
                             state: {
                                 code: this.props.code,
-                                name: this.props.name
+                                name: this.props.name,
+                                department: this.props.department,
+                                description: this.props.description,
+                                semester: this.props.semester,
+                                resourceUrl: this.props.resourceUrl,
+                                credits: this.props.credits,
+                                hours: this.props.hours,
+                                t1: this.props.t1,
+                                t2: this.props.t2,
+                                assignment: this.props.assignment,
+                                esa: this.props.esa
                             }
                         }}> View Course </Link>
 
@@ -156,19 +185,7 @@ class CourseCard extends Component {
                 <br />
             </div>
         );
-        // const studContent = (
-        //     <div id="CourseCard">
-        //         <div className="card bg-light mx-auto">
-        //             <div className="card-title text-center"><h3><strong><i>{this.props.code}</i>: {this.props.name}</strong></h3></div>
-        //             <div className="card-body text-left">
-        //                 Instructor: {this.state.profName}<br />
-        //                 Description: {this.props.description}<br />
-        //                 Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a>
-        //             </div>
-        //         </div>
-        //         <br />
-        //     </div>
-        // );
+
         if (this.props.role == 'admin') {
             content = adminContent;
         } else {

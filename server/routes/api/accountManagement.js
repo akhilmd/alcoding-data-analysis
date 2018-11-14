@@ -294,6 +294,36 @@ module.exports = (app) => {
         });
     }); // end of getDetails endpoint
 
+
+    app.get('/api/account/professors/all', function(req, res) {
+        // GET http://localhost:8080/api/account/:userID/details
+
+        User.find({
+            role: 'prof'
+        }, (err, users) => {
+            if (err) {
+                return res.status(500).send({
+                    success: false,
+                    message: 'Error: Server error'
+                });
+            }
+
+            if (users.length < 1) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Error: User not found.'
+                });
+            }
+
+            // Return a response with user data
+            return res.status(200).send({
+                success: true,
+                message: 'User Details successfully retrieved',
+                user: {users}
+            });
+        });
+    }); // end of getDetails endpoint
+
     app.put('/api/account/:userID/basicInfo', verifyUser, function(req, res) {
     // PUT http://localhost:8080/api/account/:userID/basicInfo
         let userID = req.params.userID;

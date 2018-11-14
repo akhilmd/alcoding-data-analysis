@@ -12,11 +12,11 @@ let keyName = 'inputFile';
 module.exports = (app) => {
     // app.get('/api/admin/createAdmin', function (req, res) {
 
-    //     var usn = "usn_stud2";
-    //     var firstName = "fn_stud2";
+    //     var usn = "usn_prof_2";
+    //     var firstName = "fn_prof_2";
     //     var lastName = undefined;
     //     var email = undefined;
-    //     var role = "student";
+    //     var role = "prof";
 
     //     if (!firstName) {
     //         return res.status(400).send({

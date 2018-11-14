@@ -11,6 +11,11 @@ class CoursesAdd extends Component {
             name: '',
             code: '',
             department: '',
+            semester: 0,
+            t1: 0,
+            t2: 0,
+            assignment: 0,
+            esa: 0,
             description: '',
             resourcesUrl: '',
             startDate: new Date(),
@@ -23,7 +28,10 @@ class CoursesAdd extends Component {
             update: false,
             file: null,
             showUpload: true,
+            professor: '',
+            professors: []
         };
+
         this.onSubmit = this.onSubmit.bind(this);
         this.editCourse = this.editCourse.bind(this);
         this.deleteCourse = this.deleteCourse.bind(this);
@@ -41,6 +49,12 @@ class CoursesAdd extends Component {
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
         this.handleisCoreChange = this.handleisCoreChange.bind(this);
         this.handleHoursChange = this.handleHoursChange.bind(this);
+        this.handleProfessorChange = this.handleProfessorChange.bind(this);
+        this.handleSemesterChange = this.handleSemesterChange.bind(this);
+        this.handleT1Change = this.handleT1Change.bind(this);
+        this.handleT2Change = this.handleT2Change.bind(this);
+        this.handleAssignmentMarksChange = this.handleAssignmentMarksChange.bind(this);
+        this.handleESAChange = this.handleESAChange.bind(this);
     }
 
     componentDidMount() {
@@ -53,24 +67,86 @@ class CoursesAdd extends Component {
             headers: {
                 'x-access-token': token
             }
-        })
-            .then(function(response) {
-                if (!response.data.success) {
-                    // TODO: throw appropriate error and redirect
-                    console.log('Error1: ' + response.data);
-                    return;
+        }).then(function(response) {
+            if (!response.data.success) {
+                console.log('Error1: ' + response.data);
+                return;
+            }
+            let data = response.data;
+            self.setState({
+                role: data.user.role
+            }, () => {
+                if(self.state.role == 'admin') {
+                    let apiAdminPath = 'api/assignments/' + userID + '/allCourses';
+                    axios.get(apiAdminPath, {
+                        headers: {
+                            'x-access-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response) {
+                        if (!response.data.success) {
+                            console.log('Error1: ' + response.data);
+                        }
+                        let data = response.data;
+                        self.setState({
+                            courses: self.state.courses.concat(data.courses.courses)
+                        });
+                        console.log(response.data);
+                    }).catch(function(error) {
+                        console.log('Error2: ', error);
+                    });    
                 }
-                let data = response.data;
-                self.setState({
-                    role: data.user.role
-                });
-            })
-            .catch(function(error) {
-                console.log('Error2: ', error);
+                
+                else if(self.state.role == 'prof') {
+                    let apiProfPath = 'api/assignments/' + userID + '/profCourses';
+                    console.log(apiProfPath);
+                    axios.get(apiProfPath, {
+                        headers: {
+                            'x-access-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response) {
+                        if (!response.data.success) {
+                            console.log('Error1: ' + response.data);
+                        }
+                        let data = response.data;
+                        self.setState({
+                            courses: self.state.courses.concat(data.courses.courses)
+                        });
+                        console.log(response.data);
+                    }).catch(function(error) {
+                        console.log('Error2: ', error);
+                    });       
+                } 
+        
+                else if(self.state.role == 'student') {
+                    let apiStudentPath = 'api/assignments/' + userID + '/studentCourses';
+                    axios.get(apiStudentPath, {
+                        headers: {
+                            'x-access-token': token,
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function(response) {
+                        if (!response.data.success) {
+                            console.log('Error1: ' + response.data);
+                        }
+                        let data = response.data;
+                        self.setState({
+                            courses: self.state.courses.concat(data.courses.courses)
+                        });
+                        console.log(response.data);
+                    }).catch(function(error) {
+                        console.log('Error2: ', error);
+                    });    
+                }
+                else {}
             });
-        // /api/assignments/:userID/courses
-        apiPath = 'api/assignments/' + userID + '/courses';
-        axios.get(apiPath, {
+        }).catch(function(error) {
+            console.log('Error2: ', error);
+        });
+
+        let apiProfPath = '/api/account/professors/all';
+        axios.get(apiProfPath, {
             headers: {
                 'x-access-token': token,
                 'Content-Type': 'application/json'
@@ -81,14 +157,13 @@ class CoursesAdd extends Component {
             }
             let data = response.data;
             self.setState({
-                courses: self.state.courses.concat(data.courses.courses)
+                professors: self.state.professors.concat(data.user.users)
             });
-            console.log(response.data);
-        })
-            .catch(function(error) {
-                console.log('Error2: ', error);
-            });
+        }).catch(function(error) {
+            console.log('Error2: ', error);
+        });
     }
+
     handleNameChange(e) {
         this.setState({
             name: e.target.value
@@ -139,6 +214,43 @@ class CoursesAdd extends Component {
             hours: e.target.value
         });
     }
+
+    handleProfessorChange(e) {
+        this.setState({
+            professor: e.target.value
+        });
+    }
+
+    handleSemesterChange(e) {
+        this.setState({
+            semester: e.target.value
+        });
+    }
+
+    handleT1Change(e) {
+        this.setState({
+            t1: e.target.value
+        });
+    }
+
+    handleT2Change(e) {
+        this.setState({
+            t2: e.target.value
+        });
+    }
+
+    handleAssignmentMarksChange(e) {
+        this.setState({
+            assignment: e.target.value
+        });
+    }
+
+    handleESAChange(e) {
+        this.setState({
+            esa: e.target.value
+        });
+    }
+
     onChange(e){
         this.setState({
             file: e.target.files[0]
@@ -174,6 +286,13 @@ class CoursesAdd extends Component {
         data.duration = {};
         data.duration.startDate = self.state.startDate;
         data.duration.endDate = self.state.endDate;
+        data.professors = self.state.professor;
+        data.semester = self.state.semester;
+        data.marks = {};
+        data.marks.t1 = self.state.t1;
+        data.marks.t2 = self.state.t2;
+        data.marks.assignment = self.state.assignment;
+        data.marks.esa = self.state.esa;
 
         data = JSON.stringify(data);
         console.log(data);
@@ -296,14 +415,53 @@ class CoursesAdd extends Component {
                         <h6>Department</h6>
                         <input type="text" className="form-control" placeholder="Department" value={this.state.department} onChange={this.handleDepartmentChange} />
                     </div>
+
                     <div className="form-group text-left">
-                        <h6>Course Description</h6>
-                        <textarea className="form-control" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
+                        <h6>Professor</h6>
+                        <select id="ProfMenu" value={this.state.professor} onChange={this.handleProfessorChange}>
+                            {
+                                this.state.professors.map(function(each, key) {
+                                    return <option key={key} value={each._id}> {each.name.firstName} </option>;
+                                })
+                            }                            
+                        </select>
                     </div>
+
                     <div className="form-group text-left">
                         <h6>Credits</h6>
                         <input type="number" className="form-control" placeholder="Credits" value={this.state.credits} onChange={this.handleCreditsChange} />
                     </div>
+
+                    <div className="form-group text-left">
+                        <h6>Semester</h6>
+                        <input type="number" className="form-control" placeholder="Semester" value={this.state.semester} onChange={this.handleSemesterChange} />
+                    </div>
+
+                    <div>
+                        <h5>Marks Distribution</h5>
+                        <div className="form-group text-left">
+                            <h6>T1</h6>
+                            <input type="number" className="form-control" placeholder="t1" value={this.state.t1} onChange={this.handleT1Change} />
+                        </div>
+                        <div className="form-group text-left">
+                            <h6>T2</h6>
+                            <input type="number" className="form-control" placeholder="t2" value={this.state.t2} onChange={this.handleT2Change} />
+                        </div>
+                        <div className="form-group text-left">
+                            <h6>Assignments</h6>
+                            <input type="number" className="form-control" placeholder="assignement" value={this.state.assignment} onChange={this.handleAssignmentMarksChange} />
+                        </div>
+                        <div className="form-group text-left">
+                            <h6>ESA</h6>
+                            <input type="number" className="form-control" placeholder="esa" value={this.state.esa} onChange={this.handleESAChange} />
+                        </div>
+                    </div>
+
+                    <div className="form-group text-left">
+                        <h6>Course Description</h6>
+                        <textarea className="form-control" placeholder="Description" value={this.state.description} onChange={this.handleDescriptionChange} />
+                    </div>
+
                     <div className="form-group text-left">
                         <h6>Duration</h6>
                         <label>Start Date</label>
@@ -317,8 +475,6 @@ class CoursesAdd extends Component {
                         <h6>Resources</h6>
                         <input type="url" className="form-control" placeholder="URLs" value={this.state.resourcesUrl} onChange={this.handleURLChange} />
                     </div>
-
-
                 </form>
             </div>
         );
@@ -366,20 +522,26 @@ class CoursesAdd extends Component {
                             this.state.courses.map(function(each) {
                                 if(each.duration != undefined){
                                     if(new Date(each.duration.endDate) > new Date()) {
+                                        console.log(each.marks);
                                         return <CourseCard 
                                         key={each.code} 
                                         code={each.code} 
                                         name={each.name} 
                                         department={each.department} 
                                         description={each.description} 
-                                        credits={each.credits} 
                                         resourceUrl={each.resourcesUrl} 
+                                        semester={each.semester}
                                         courseID={each._id} 
                                         editCourse={that.editCourse.bind(that)}
                                         deleteCourse={that.deleteCourse.bind(that)}
                                         profID={each.professors[0]}
                                         credits={each.details.credits}
-                                        role={that.state.role} />;
+                                        hours={each.details.hours}
+                                        role={that.state.role}
+                                        t1={each.marks.t1}
+                                        t2={each.marks.t2}
+                                        assignment={each.marks.assignment}
+                                        esa={each.marks.esa} />;
                                     }
                                 }
                             })
@@ -393,20 +555,26 @@ class CoursesAdd extends Component {
                             this.state.courses.map(function(each) {
                                 if(each.duration != undefined) {
                                     if(new Date(each.duration.endDate) < new Date()){
+                                        console.log(each);
                                         return <CourseCard 
                                         key={each.code} 
                                         code={each.code} 
                                         name={each.name} 
                                         department={each.department} 
                                         description={each.description} 
-                                        credits={each.credits} 
                                         resourceUrl={each.resourcesUrl} 
+                                        semester={each.semester}
                                         courseID={each._id} 
                                         editCourse={that.editCourse.bind(that)}
                                         deleteCourse={that.deleteCourse.bind(that)}
                                         profID={each.professors[0]}
                                         credits={each.details.credits}
-                                        role={that.state.role} />;
+                                        hours={each.details.hours}
+                                        role={that.state.role}
+                                        t1={each.t1}
+                                        t2={each.t2}
+                                        assignment={each.assignment}
+                                        esa={each.esa} />;
                                     }
                                 }
                             })

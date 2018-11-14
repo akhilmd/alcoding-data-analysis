@@ -295,6 +295,44 @@ class AssignmentAdd extends Component {
                     </div>
                 </div>
                 <hr />
+                <div className='details'>
+                    <h5>Department:</h5>{this.props.location.state.department}<br /><br />
+                    <h5>Semester: </h5>{this.props.location.state.semester}<br /><br />
+                    <h5>Course Description: </h5>{this.props.location.state.description}<br /><br />
+                    <h5>Resources URL: </h5>{this.props.location.state.resourceUrl}<br /><br />
+                    <h5>Number of Credits: </h5>{this.props.location.state.credits}<br /><br />
+                    <h5>Number of Hours: </h5>{this.props.location.state.hours}<br /><br />
+                    <h5>Marks Distribution</h5><br />
+                    <table>
+                        <tbody>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Marks Alloted</th>
+                            </tr>
+                            <tr>
+                                <td>T1</td>
+                                <td>{this.props.location.state.t1}</td>
+                            </tr>
+                            <tr>
+                                <td>T2</td>
+                                <td>{this.props.location.state.t2}</td>
+                            </tr>                    
+                            <tr>
+                                <td>Assignments</td>
+                                <td>{this.props.location.state.assignment}</td>
+                            </tr>                    
+                            <tr>
+                                <td>ESA</td>
+                                <td>{this.props.location.state.esa}</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
                 <div className='row'>
                     <div className='col-sm-7'>
                         <h1 className='text-center'>
