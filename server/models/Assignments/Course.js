@@ -22,6 +22,9 @@ const CourseSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    semester: {
+        type: Number
+    },
     description: {
         type: String
     },
@@ -50,6 +53,20 @@ const CourseSchema = new mongoose.Schema({
         isCore: {
             type: Boolean,
             default: true
+        }
+    },
+    marks: {
+        t1: {
+            type: Number
+        },
+        t2: {
+            type: Number
+        },
+        assignment: {
+            type: Number
+        },
+        esa: {
+            type: Number
         }
     },
     isDeleted: {
