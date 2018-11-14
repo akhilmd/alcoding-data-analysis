@@ -337,7 +337,10 @@ class CoursesAdd extends Component {
                             {this.state.show ? <button type="close" className="btn mx-3 w-20" onClick={this.closeForm}>Close</button> : null}
                         </div>
                     </div>
-                    <div className="row">
+
+                    <br/>
+                    <h4>Create courses in bulk using csv file:</h4>
+                    <div className="row" style={{paddingLeft: "15px"}}>
                         <div className="custom-file col-sm">
                             <input type="file" className="custom-file-input" id="validatedCustomFile" onChange={this.onChange}/>
                             <label className="custom-file-label" htmlFor="validatedCustomFile">Choose file</label>
@@ -352,8 +355,9 @@ class CoursesAdd extends Component {
 
         let that=this;
         const adminContent = (
-            <div className='row'>
+            <div >
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
+                <br />
                 {addCourse}
                 <div className='col-sm-7'>
                     <h1>Active Courses</h1>
