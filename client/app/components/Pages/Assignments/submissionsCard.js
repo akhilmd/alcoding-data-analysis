@@ -69,6 +69,10 @@ class SubmissionsCard extends Component {
                 'Content-Type': 'application/json'
             }
         };
+        if (this.state.marks > this.props.maxMarks) {
+            alert("marks > maxMarks");
+            return;
+        }
         let data = Object.assign({}, self.state.assignment);
         data.marks = this.state.marks;
         data = JSON.stringify(data);

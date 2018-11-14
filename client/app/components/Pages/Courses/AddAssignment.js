@@ -257,11 +257,13 @@ class AssignmentAdd extends Component {
             </div>
         );
         let that = this;
+        console.log("XXXXXXX", this.state.assignments);
         const AssignmentContent = (
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        return <AssignmentCard deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role={that.state.role} />;
+                        console.log();
+                        return <AssignmentCard dueDate={each.duration.endDate.slice(0, 10)} deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourcesUrl} assignmentID={each._id} submissions={each.submissions} role={that.state.role} />;
                     })
                 }
             </div>

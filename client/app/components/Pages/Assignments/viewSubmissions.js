@@ -42,7 +42,7 @@ class viewSubmissions extends Component {
                 <div>
                     {
                         this.state.submissions.map(function(each) {
-                            return <SubmissionsCard assignmentID={self.props.location.state.assignmentID} marks={each.marksObtained} key={each.user} fileID={each.file} user={each.user}/>;
+                            return <SubmissionsCard maxMarks={self.props.location.state.maxMarks} assignmentID={self.props.location.state.assignmentID} marks={each.marksObtained} key={each.user} fileID={each.file} user={each.user}/>;
                         })
                     }
                     <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>

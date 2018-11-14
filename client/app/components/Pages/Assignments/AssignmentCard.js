@@ -22,7 +22,6 @@ class AssignmentCard extends Component {
     componentDidMount() {
         let userID = localStorage.getItem('user_id');
         // let success=0;
-        console.log(this.props.submissions);
         if (this.props.submissions.length) {
             for (let i=0; i<this.props.submissions.length; i++) {
                 let submission = this.props.submissions[i];
@@ -106,31 +105,13 @@ class AssignmentCard extends Component {
             Due Date: {this.props.dueDate}<br />
             Maximum Marks: {this.props.maxMarks}<br />
             Resource URL: <a href={'//' + this.props.resourceUrl}>{this.props.resourceUrl}</a><br /><br />
-                        {/* <Link className='btn btn-dark mx-2' to={{
-                            pathname: '/assignments/' + this.props.assignmentID,
-                            state: {
-                                uniqueID: this.props.uniqueID,
-                                name: this.props.name,
-                                details: this.props.details,
-                                type: this.props.type,
-                                dueDate: this.props.dueDate,
-                                maxMarks: this.props.maxMarks,
-                                resourceUrl: this.props.resourceUrl
-                            }
-                        }}> View Assignment </Link>
-                        <Link className='btn btn-dark mx-2' to={{
-                            pathname: '/assignments/submissions/' + this.props.uniqueID,
-                            state: {
-                                assignmentID: this.props.assignmentID
-                            }
-                        }}> View Submissions </Link> */}
-
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.editCallback}>Edit</button>
                         <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.deleteCallback}>Delete</button>
                         <Link className='btn btn-dark w-20 mx-3' to={{
                             pathname: '/assignments/submissions/' + this.props.uniqueID,
                             state: {
-                                assignmentID: this.props.assignmentID
+                                assignmentID: this.props.assignmentID,
+                                maxMarks: this.props.maxMarks
                             }
                         }}> Evaluate </Link>
                     </div>
@@ -138,6 +119,7 @@ class AssignmentCard extends Component {
                 <br />
             </div>
         );
+        console.log(this.props);
         const studContent = (
             <div id="AssignmentCard">
                 <div className="card bg-light mx-auto">
