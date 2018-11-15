@@ -86,7 +86,7 @@ class Assignments extends Component {
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='prof' />;
+                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} questions={each.questions} assignmentID={each._id} submissions={each.submissions} role='prof' />;
                     })
                 }
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>
@@ -96,7 +96,7 @@ class Assignments extends Component {
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role='student' />;
+                        return <AssignmentCard key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} questions={each.questions} assignmentID={each._id} submissions={each.submissions} role='student' />;
                     })
                 }
                 <div className="text-center"><a href="/" className="btn btn-dark" role="button">Home</a></div>

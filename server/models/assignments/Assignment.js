@@ -19,6 +19,9 @@ const AssignmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    questions: [{
+        type: Array
+    }],
     details: {
         type: String
     },
