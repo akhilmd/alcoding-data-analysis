@@ -10,6 +10,7 @@ class AssignmentAdd extends Component {
             name: '',
             uniqueID: '',
             type: '',
+            questions: [],
             details: '',
             maxMarks: undefined,
             edit: undefined,
@@ -18,7 +19,8 @@ class AssignmentAdd extends Component {
             endDate: '',
             assignment: {},
             assignments: [],
-            show: false
+            show: false,
+            stopQuestions: true
         };
         this.onAdd = this.onAdd.bind(this);
         this.showForm = this.showForm.bind(this);
@@ -31,6 +33,8 @@ class AssignmentAdd extends Component {
         this.handleURLChange = this.handleURLChange.bind(this);
         this.handleStartDateChange = this.handleStartDateChange.bind(this);
         this.handleEndDateChange = this.handleEndDateChange.bind(this);
+        this.handleQuestionChange = this.handleQuestionChange.bind(this);
+        this.stopQuestions = this.stopQuestions.bind(this);
     }
     componentDidMount() {
         let self = this;
@@ -93,6 +97,14 @@ class AssignmentAdd extends Component {
         this.setState({
             type: e.target.value
         });
+        if(e.target.value == "quiz") {
+            this.setState({
+                stopQuestions: false
+            }); }
+        else if(e.target.value == "file-upload") {
+            this.setState({
+                stopQuestions: true
+            }); }
     }
     handleDetailsChange(e) {
         this.setState({
@@ -108,6 +120,22 @@ class AssignmentAdd extends Component {
         this.setState({
             resourcesUrl: e.target.value
         });
+    }
+    handleQuestionChange(e) {
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
+        console.log('*****entered handleQuestionChange*****');
+         var q = document.getElementById("ques").value;
+         var opns = [];
+         opns.push(document.getElementById("op1").value);
+         opns.push(document.getElementById("op2").value);
+         var a = document.getElementById("ans").value;
+         var old = this.state.questions;
+         old.push({q,opns,a});
+         this.setState({
+            questions: old
+        });
+        e.preventDefault();
     }
     handleStartDateChange(e) {
         this.setState({
@@ -145,6 +173,7 @@ class AssignmentAdd extends Component {
         data.details = self.state.details;
         data.resourcesUrl = self.state.resourcesUrl;
         data.duration = {startDate: self.state.startDate, endDate: self.state.endDate};
+        data.questions = self.state.questions;
         data = JSON.stringify(data);
         console.log(data);
         axios.post(`/api/assignments/${userID}/createAssignment`, data, config)
@@ -159,12 +188,17 @@ class AssignmentAdd extends Component {
     }
     showForm() {
         this.setState({
-            show: true
+            show: true,
+        });
+    }
+    stopQuestions() {
+        this.setState({
+            stopQuestions: true
         });
     }
     closeForm() {
         this.setState({
-            show: false
+            show: false,
         });
     }
     editAssignment(assignID) {
@@ -175,6 +209,12 @@ class AssignmentAdd extends Component {
         });
         console.log(assignToBeEdited);
         assignToBeEdited.duration = assignToBeEdited.duration || {startDate: "2000-01-01", endDate: "2000-01-01"};
+        if(assignToBeEdited.type == "file-upload") {
+            this.state.stopQuestions = true;
+        }
+        else if(assignToBeEdited.type == "quiz") {
+            this.state.stopQuestions = false;
+        }
         this.setState({
             edit: assignID,
             show: true,
@@ -218,7 +258,7 @@ class AssignmentAdd extends Component {
     }
     render() {
         let content;
-        const click = (
+        const click1 = (
             <div>
                 <form>
                     <div className="form-group text-left">
@@ -253,17 +293,27 @@ class AssignmentAdd extends Component {
                         <h6>Resources</h6>
                         <input type='text' className="form-control" placeholder="URLs" value={this.state.resourcesUrl} onChange={this.handleURLChange} />
                     </div>
+                    {/* <div>
+                        {addQuestionsContent}
+                    </div> */}
+                    {this.state.stopQuestions ? null : <div className="form-group text-left">
+                        <h6>Question</h6>
+                        <textarea id="ques" className="form-control" placeholder="Question" value={this.state.questions.ques} />
+                        <input id="op1" type="text" placeholder="Option1" value={this.state.questions.options} />
+                        <input id="op2" type="text" placeholder="Option2" value={this.state.questions.options} />
+                        <input id="ans" type="text" placeholder="Correct Option" value={this.state.questions.options} />
+                        <button className="btn btn-dark mx-3 w-20 " onClick={this.handleQuestionChange}>Add Question</button>
+                        <button className="btn w-20 mx-3" onClick={this.stopQuestions}>Done Adding</button>
+                    </div>}
                 </form>
             </div>
         );
         let that = this;
-        console.log("XXXXXXX", this.state.assignments);
         const AssignmentContent = (
             <div>
                 {
                     this.state.assignments.map(function(each) {
-                        console.log();
-                        return <AssignmentCard dueDate={each.duration.endDate.slice(0, 10)} deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourcesUrl} assignmentID={each._id} submissions={each.submissions} role={that.state.role} />;
+                        return <AssignmentCard deleteAssign={that.deleteAssignment.bind(that)} editAssign={that.editAssignment.bind(that)} key={each.uniqueID} uniqueID={each.uniqueID} name={each.name} details={each.details} type={each.type.toUpperCase()} maxMarks={each.maxMarks} resourceUrl={each.resourceUrl} assignmentID={each._id} submissions={each.submissions} role={that.state.role} />;
                     })
                 }
             </div>
@@ -277,8 +327,10 @@ class AssignmentAdd extends Component {
                 <div className='col-sm-5'>
                     <div className='card text-center bg-light'>
                         <div className='card-body '>
-                            {this.state.show ? click : <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.showForm}>Add Assignment</button>}
-                            {this.state.show ? null : <button className="btn w-20 mx-3"><Link className='text-dark' to="/courses"> Back To Courses </Link></button>}
+                            {this.state.show ? click1 : <button type="button" className="btn btn-dark w-20 mx-3" onClick={this.showForm}>Add Assignment</button>}
+                            {/* {this.state.show ? null : <button className="btn w-20 mx-3"><Link className='text-dark' to="/courses"> Back To Courses </Link></button>} */}
+                            {this.state.show ? null : <a href="/courses" className="btn btn-light" role="button">Back To Courses</a>}
+                            {/* <a href="/" className="btn btn-dark" role="button">Home</a></div> */}
                             {this.state.show ? <button type="submit" className="btn btn-dark mx-3 w-20 " onClick={this.onAdd}>Submit</button> : null}
                             {this.state.show ? <button type="close" className="btn w-20 mx-3" onClick={this.closeForm}>Close</button> : null}
                         </div>

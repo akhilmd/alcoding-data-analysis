@@ -579,6 +579,8 @@ module.exports = (app) => {
                 assignment.details = req.body.details;
                 assignment.maxMarks = req.body.maxMarks;
                 assignment.resourcesUrl = req.body.resourcesUrl;
+                // console.log("the questions in assignments.js are ---->",req.body.questions);
+                assignment.questions = req.body.questions;
                 assignment.duration.startDate = req.body.duration.startDate;
                 assignment.duration.endDate = req.body.duration.endDate;
                 assignment.POC = req.body.POC;
