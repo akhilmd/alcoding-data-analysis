@@ -438,7 +438,7 @@ module.exports = (app) => {
                 if (courseExists) {
                     continue;
                 }
-                if (!obj.name || !obj.startDate || !obj.endDate || !obj.credits || !obj.hours || !obj.department || !obj.resourcesUrl || !obj.description) {
+                if (!obj.profusn || !obj.t1 || !obj.t2 || !obj.assignment || !obj.esa || !obj.semester || !obj.name || !obj.startDate || !obj.endDate || !obj.credits || !obj.hours || !obj.department || !obj.resourcesUrl || !obj.description) {
                     console.log('Missing details for ' +obj.code);
                     continue;
                 }
@@ -465,17 +465,33 @@ module.exports = (app) => {
                 newCourse.duration.endDate = new Date(endDate[0], endDate[1], endDate[2]);
                 newCourse.details.credits = obj.credits;
                 newCourse.details.hours = obj.hours;
-                newCourse.professors.push(req.params.userID);
+                newCourse.marks.t1 = obj.t1;
+                newCourse.marks.t2 = obj.t2;
+                newCourse.marks.esa = obj.esa;
+                newCourse.marks.assignment = obj.assignment;
+                newCourse.marks.sem = obj.sem;
 
-                newCourse.save((err) => {
+                User.find({usn: obj.profusn.toUpperCase()}, function(err, users) {
                     if (err) {
                         return res.status(500).send({
                             success: false,
                             message: 'Error: Server error'
                         });
                     }
+
+                    console.log(users);
+                    newCourse.professors.push(users[0]._id);
+
+                    newCourse.save((err) => {
+                        if (err) {
+                            return res.status(500).send({
+                                success: false,
+                                message: 'Error: Server error'
+                            });
+                        }
+                    });
+                    console.log(obj.name+' successfully created');
                 });
-                console.log(obj.name+' successfully created');
             }
             fs.unlinkSync(req.file.path);
             return res.status(200).send({
