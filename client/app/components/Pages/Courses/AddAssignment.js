@@ -272,7 +272,7 @@ class AssignmentAdd extends Component {
 
         let addAssignmentContent = (<div></div>);
 
-        if (this.state.role == 'admin' || this.state.role == 'prof') {
+        if (this.state.role == 'prof') {
             addAssignmentContent = (
                 <div className='col-sm-5'>
                     <div className='card text-center bg-light'>
